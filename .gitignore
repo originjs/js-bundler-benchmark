@@ -1,0 +1,12 @@
+node_modules
+build
+.next
+.parcel-cache
+dist
+dist-parcel
+dist-esbuild
+dist-webpack
+dist-webpack-swc
+dist-rspack
+esbuild-serve
+next-env.d.ts
