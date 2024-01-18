@@ -65,41 +65,37 @@ if (runDev) {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         if(!buildTool.skipHmr){
-          
-        const rootConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
-          const logText = e.text();
-          console.log(logText)
-          return logText.includes('root hmr');
-        }});
-        appendFileSync(rootFilePath, `
-          console.log('root hmr');
-        `)
-        const hmrRootStart = Date.now();
-        await rootConsolePromise;
-        totalResult.rootHmr ??= 0;
-        totalResult.rootHmr += (Date.now() - hmrRootStart);
+          const rootConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
+            const logText = e.text();
+            console.log(logText)
+            return logText.includes('root hmr');
+          }});
+          appendFileSync(rootFilePath, `
+            console.log('root hmr');
+          `)
+          const hmrRootStart = Date.now();
+          await rootConsolePromise;
+          totalResult.rootHmr ??= 0;
+          totalResult.rootHmr += (Date.now() - hmrRootStart);
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const leafConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
-          const logText = e.text();
-          console.log(logText)
-          return logText.includes('leaf hmr');
-        } });
-        appendFileSync(leafFilePath, `
-          console.log('leaf hmr');
-        `)
-        const hmrLeafStart = Date.now();
-        await leafConsolePromise;
-        totalResult.leafHmr ??= 0;
-        totalResult.leafHmr += (Date.now() - hmrLeafStart);
-      }else{
-        totalResult.rootHmr ??= -1;
-        totalResult.leafHmr ??= -1;
+          const leafConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
+            const logText = e.text();
+            console.log(logText)
+            return logText.includes('leaf hmr');
+          } });
+          appendFileSync(leafFilePath, `
+            console.log('leaf hmr');
+          `)
+          const hmrLeafStart = Date.now();
+          await leafConsolePromise;
+          totalResult.leafHmr ??= 0;
+          totalResult.leafHmr += (Date.now() - hmrLeafStart);
       }
 
-        buildTool.stop();
-        await page.close();
+      buildTool.stop();
+      await page.close();
       } finally {
         writeFileSync(rootFilePath, originalRootFileContent);
         writeFileSync(leafFilePath, originalLeafFileContent);
@@ -160,8 +156,8 @@ if (outputMd) {
                     ? ` (including server start up time: ${result.serverStart}ms)`
                     : ''
                 }`,
-                `${result.rootHmr != -1? result.rootHmr+'ms': '---'}`,
-                `${result.leafHmr != -1? result.leafHmr+'ms': '---'}`
+                `${result.rootHmr ? `${result.rootHmr}ms` : '---'}`,
+                `${result.leafHmr ? `${result.leafHmr}ms` : '---'}`
               ]
             : []),
           ...(runBuild
@@ -183,8 +179,8 @@ if (outputMd) {
                 ? ` (including server start up time: ${result.serverStart}ms)`
                 : ''
             }`,
-            'Root HMR time': `${result.rootHmr}ms`,
-            'Leaf HMR time': `${result.leafHmr}ms`,
+            'Root HMR time': `${result.rootHmr ? `${result.rootHmr}ms` : '---'}`,
+            'Leaf HMR time': `${result.leafHmr ? `${result.leafHmr}ms` : '---'}`,
           }
         : {}),
       ...(runBuild
