@@ -8,13 +8,14 @@ import url from "url";
 const _dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 class BuildTool {
-  constructor(name, port, script, startedRegex, clean, buildScript) {
+  constructor(name, port, script, startedRegex, clean, buildScript, skipHmr = false) {
     this.name = name;
     this.port = port;
     this.script = script;
     this.startedRegex = startedRegex;
-    this.clean = clean
-    this.buildScript = buildScript
+    this.clean = clean;
+    this.buildScript = buildScript;
+    this.skipHmr = skipHmr;
   }
 
   async startServer() {
@@ -22,6 +23,7 @@ class BuildTool {
     this.child = child;
     return new Promise((resolve, reject) => {
       child.stdout.on('data', (data) => {
+        console.log(data.toString());
         const match = this.startedRegex.exec(data);
         if (match) {
           if (!match[1]) {
@@ -80,7 +82,7 @@ export const buildTools = [
     "Rspack",
     8080,
     "start:rspack",
-    /compiled in (.+ms)/,
+    /compiled in (.+m?s)/,
     () => {},
     "build:rspack"
   ),
@@ -88,7 +90,7 @@ export const buildTools = [
     "esbuild",
     1235,
     "start:esbuild",
-    /esbuild serve cost (.+ms)/,
+    /esbuild serve cost (.+m?s)/,
     async () => {
       const serveDir = path.join(_dirname, "../esbuild-serve");
       try {
@@ -114,7 +116,7 @@ export const buildTools = [
     "Webpack (babel)",
     8081,
     "start:webpack",
-    /compiled successfully in (.+ms)/,
+    /compiled successfully in (.+m?s)/,
     () => {},
     "build:webpack"
   ),
@@ -122,7 +124,7 @@ export const buildTools = [
     "Webpack (swc)",
     8082,
     "start:webpack-swc",
-    /compiled successfully in (.+ ms)/,
+    /compiled successfully in (.+ m?s)/,
     () => {},
     "build:webpack-swc"
   ),
@@ -130,7 +132,7 @@ export const buildTools = [
     "Vite",
     5173,
     "start:vite",
-    /ready in (.+ ms)/,
+    /ready in (.+ m?s)/,
     () => rm(path.join(_dirname, '../node_modules/.vite'), { force: true, recursive: true, maxRetries: 5 }),
     "build:vite"
   ),
@@ -138,7 +140,7 @@ export const buildTools = [
     "Vite (swc)",
     5174,
     "start:vite-swc",
-    /ready in (.+ ms)/,
+    /ready in (.+ m?s)/,
     () => rm(path.join(_dirname, '../node_modules/.vite-swc'), { force: true, recursive: true, maxRetries: 5 }),
     "build:vite-swc"
   ),
@@ -146,9 +148,10 @@ export const buildTools = [
     "Farm",
     9000,
     "start:farm",
-    /Ready in (.+ms)/,
+    /Ready in (.+m?s)/,
     () => rm(path.join(_dirname, '../node_modules/.farm'), { force: true, recursive: true, maxRetries: 5 }),
-    "build:farm"
+    "build:farm",
+    true
   ),
   new BuildTool(
     "Parcel",

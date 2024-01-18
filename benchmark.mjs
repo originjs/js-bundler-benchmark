@@ -50,7 +50,7 @@ if (runDev) {
         const page = await (await browser.newContext()).newPage();
         await new Promise((resolve) => setTimeout(resolve, 300)); // give some rest
 
-        const loadPromise = page.waitForEvent('load');
+        const loadPromise = page.waitForEvent('load',{timeout:300000});
         const pageLoadStart = Date.now();
         const serverStartTime = await buildTool.startServer();
         page.goto(`http://localhost:${buildTool.port}`);
@@ -64,7 +64,13 @@ if (runDev) {
 
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const rootConsolePromise = page.waitForEvent('console', { predicate: e => e.text().includes('root hmr') });
+        if(!buildTool.skipHmr){
+          
+        const rootConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
+          const logText = e.text();
+          console.log(logText)
+          return logText.includes('root hmr');
+        }});
         appendFileSync(rootFilePath, `
           console.log('root hmr');
         `)
@@ -75,7 +81,11 @@ if (runDev) {
 
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const leafConsolePromise = page.waitForEvent('console', { predicate: e => e.text().includes('leaf hmr') });
+        const leafConsolePromise = page.waitForEvent('console', { timeout:300000, predicate: e => {
+          const logText = e.text();
+          console.log(logText)
+          return logText.includes('leaf hmr');
+        } });
         appendFileSync(leafFilePath, `
           console.log('leaf hmr');
         `)
@@ -83,6 +93,10 @@ if (runDev) {
         await leafConsolePromise;
         totalResult.leafHmr ??= 0;
         totalResult.leafHmr += (Date.now() - hmrLeafStart);
+      }else{
+        totalResult.rootHmr ??= -1;
+        totalResult.leafHmr ??= -1;
+      }
 
         buildTool.stop();
         await page.close();
@@ -146,8 +160,8 @@ if (outputMd) {
                     ? ` (including server start up time: ${result.serverStart}ms)`
                     : ''
                 }`,
-                `${result.rootHmr}ms`,
-                `${result.leafHmr}ms`
+                `${result.rootHmr != -1? result.rootHmr+'ms': '---'}`,
+                `${result.leafHmr != -1? result.leafHmr+'ms': '---'}`
               ]
             : []),
           ...(runBuild
