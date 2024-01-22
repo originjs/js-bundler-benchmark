@@ -8,5 +8,6 @@ dist-esbuild
 dist-webpack
 dist-webpack-swc
 dist-rspack
+dist-snowpack
 esbuild-serve
 next-env.d.ts
