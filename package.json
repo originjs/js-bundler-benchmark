@@ -17,6 +17,8 @@
     "@farmfe/core": "^0.14.12",
     "@farmfe/plugin-react": "^0.4.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@rsbuild/core": "^0.3.5",
+    "@rsbuild/plugin-react": "^0.3.5",
     "@rspack/cli": "^0.4.1",
     "@rspack/core": "^0.4.1",
     "@rspack/plugin-react-refresh": "^0.4.1",
@@ -60,6 +62,7 @@
     "start:turbopack": "next dev --turbo -p 3000",
     "start:parcel": "parcel index.html --dist-dir dist-parcel",
     "start:snowpack": "snowpack dev",
+    "start:rsbuild": "rsbuild dev",
     "build:rspack": "rspack build",
     "build:vite": "vite build",
     "build:vite-swc": "vite build -c vite.swc.config.ts",
@@ -69,8 +72,8 @@
     "build:turbo": "echo 'skipped'",
     "build:farm": "cross-env IS_BUILD=1 farm build",
     "build:esbuild": "esbuild src/index.tsx --bundle --minify --target=chrome87,firefox78,safari14,edge88 --outdir=dist-esbuild",
-    "build:snowpack": "snowpack build"
-    
+    "build:snowpack": "snowpack build",
+    "build:rsbuild": "rsbuild build"
   },
   "browserslist": [
     "Chrome >= 87, Firefox >= 78, Safari >= 14, Edge >= 88"
