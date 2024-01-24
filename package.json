@@ -84,5 +84,8 @@
   },
   "alias": {
     "process": false
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
