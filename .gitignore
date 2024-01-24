@@ -2,6 +2,7 @@ node_modules
 build
 .next
 .parcel-cache
+.idea
 dist
 dist-parcel
 dist-esbuild
@@ -12,3 +13,4 @@ dist-snowpack
 dist-rsbuild
 esbuild-serve
 next-env.d.ts
+/packages/projects/**/dist-*
