@@ -1,11 +1,17 @@
 import { appendFileSync, readFileSync, writeFileSync } from "fs";
-import path from "path";
 import playwright from "playwright";
-import { parseArgs } from './benchmark/parseArgs.mjs'
-import { buildTools } from "./benchmark/buildTools.mjs"
+import { parseArgs } from './parseArgs.mjs'
+import { buildTools } from "./buildTools.mjs"
+import {fileURLToPath} from "node:url";
+import {resolve , dirname}from "path";
 
-const rootFilePath = path.resolve('src', 'comps', 'triangle.jsx');
-const leafFilePath = path.resolve('src', 'comps', 'triangle_1_1_2_1_2_2_1.jsx');
+
+// TODO 增加vue的workspace名称 通过参数传入
+const workspaceName = "react-demo"
+
+// TODO 设置叶子结点和跟结点
+const rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
+const leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
 
 const originalRootFileContent = readFileSync(rootFilePath, 'utf-8');
 const originalLeafFileContent = readFileSync(leafFilePath, 'utf-8');
@@ -33,7 +39,7 @@ if (runDev) {
     if (hotRun) {
       console.log(`Populate cache: ${buildTool.name}`);
       const page = await (await browser.newContext()).newPage();
-      await buildTool.startServer();
+      await buildTool.startServer(workspaceName);
       await page.goto(`http://localhost:${buildTool.port}`, { waitUntil: 'load' });
       buildTool.stop();
       await page.close();
@@ -52,7 +58,7 @@ if (runDev) {
 
         const loadPromise = page.waitForEvent('load',{timeout:300000});
         const pageLoadStart = Date.now();
-        const serverStartTime = await buildTool.startServer();
+        const serverStartTime = await buildTool.startServer(workspaceName);
         page.goto(`http://localhost:${buildTool.port}`);
         await loadPromise;
         totalResult.startup ??= 0;
@@ -118,7 +124,7 @@ if (runBuild) {
       for (let i = 0; i < count; i++) {
         console.log(`Running: ${buildTool.name} (${i+1})`);
         const productionStart = Date.now();
-        await buildTool.startProductionBuild()
+        await buildTool.startProductionBuild(workspaceName)
         const productionEnd = Date.now()
         sum += productionEnd - productionStart
       }

@@ -1,0 +1,16 @@
+{
+  "name": "tools",
+  "version": "0.0.0",
+  "description": "tools for benchmark",
+  "private": true,
+  "dependencies": {
+    "playwright": "^1.41.1",
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.11"
+  },
+  "scripts": {
+    "postinstall": "pnpm exec playwright install"
+  }
+}
