@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import {fileURLToPath, resolve} from "node:url";
 
-let projectsDir = resolve(fileURLToPath((import.meta.url)), '../');
+const projectsDir = resolve(fileURLToPath((import.meta.url)), '../projects/');
 const args = process.argv.slice(2);
 const parsedArg = new Map();
 args.forEach(arg => {
@@ -14,8 +14,7 @@ args.forEach(arg => {
 const watch = parsedArg.has("--watch");
 const entry = parsedArg.get("--entry");
 
-
-let outputDir = resolve(projectsDir,  parsedArg.get("--outputDir"));
+const outputDir = resolve(projectsDir, parsedArg.get("--outputDir"));
 const context = await esbuild.context({
     entryPoints: [resolve(projectsDir, entry)],
     bundle: true,
@@ -61,16 +60,3 @@ if (watch) {
     await context.rebuild();
     context.dispose();
 }
-
-export const template = `
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    </head>
-    <body>
-        <script src="./index.js"></script>
-    </body>
-</html>
-`

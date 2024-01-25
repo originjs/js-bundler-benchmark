@@ -12,7 +12,7 @@
     "start:rspack-swc": "cross-env NODE_ENV=development rspack serve --config rspack.swc.config.mjs",
     "start:turbopack": "cross-env NODE_ENV=development next dev --turbo -p 3000",
     "start:farm": "cross-env NODE_ENV=development farm start",
-    "start:esbuild": "cross-env NODE_ENV=development node ../tools/esbuild.mjs --watch --outputDir=react/dist-esbuild --entry=react/src/main.tsx",
+    "start:esbuild": "cross-env NODE_ENV=development node ../../tools/esbuild.mjs --watch --outputDir=react/dist-esbuild --entry=react/src/main.tsx",
     "start:parcel": "cross-env NODE_ENV=development parcel index.html --dist-dir dist-parcel",
     "start:snowpack": "cross-env NODE_ENV=development snowpack dev",
     "start:rsbuild": "cross-env NODE_ENV=development rsbuild dev",
