@@ -6,6 +6,9 @@ export default defineConfig({
     plugins: [react()],
     build: {
         outDir: 'dist-vite',
+        rollupOptions:{
+            input:"index.html"
+        }
     },
     resolve: {
         extensions: ['.tsx', '.jsx', '.ts', '.js', '.json']
