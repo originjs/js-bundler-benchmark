@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "benchmark": "node packages/tools/benchmark.mjs",
+    "benchmark:react-demo": "node packages/tools/benchmark.mjs -p=react-demo",
     "benchmark:dev": "node packages/tools/benchmark.mjs benchmark.mjs -t=dev",
     "benchmark:build": "node packages/tools/benchmark.mjs benchmark.mjs -t=build"
   },

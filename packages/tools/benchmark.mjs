@@ -5,25 +5,27 @@ import {buildTools} from "./buildTools.mjs"
 import {fileURLToPath} from "node:url";
 import {resolve, dirname} from "path";
 
-
-// TODO 增加vue的workspace名称 通过参数传入
-const workspaceName = "react-demo"
-
-// TODO 设置叶子结点和跟结点
-const rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
-const leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
-
-const originalRootFileContent = readFileSync(rootFilePath, 'utf-8');
-const originalLeafFileContent = readFileSync(leafFilePath, 'utf-8');
-
 const {
     type,
     count,
     hotRun,
-    outputMd
+    outputMd,
+    projectName
 } = parseArgs()
 const runDev = type === 'all' || type === 'dev'
 const runBuild = type === 'all' || type === 'build'
+const workspaceName = projectName || "triangle-demo"
+
+let rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
+let leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
+
+if(workspaceName == "triangle-demo"){
+    rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/triangle/src/comps', 'triangle.jsx');
+    leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/triangle/src/comps',  'triangle_1_1_2_1_2_2_1.jsx');
+}
+
+const originalRootFileContent = readFileSync(rootFilePath, 'utf-8');
+const originalLeafFileContent = readFileSync(leafFilePath, 'utf-8');
 
 console.log(`Running ${hotRun ? 'hot' : 'cold'} run ${count} times`)
 console.log()

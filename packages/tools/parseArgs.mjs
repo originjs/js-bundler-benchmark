@@ -30,10 +30,17 @@ export const parseArgs = () => {
 
   const outputMd = process.argv.includes('--markdown')
 
+  let projectName;
+  const projectArg = process.argv.find((arg) => arg.startsWith('-p='))
+  if (projectArg) {
+    projectName = projectArg.slice('-p='.length);
+  }
+
   return {
     type,
     count,
     hotRun,
-    outputMd
+    outputMd,
+    projectName
   }
 }
