@@ -11,6 +11,7 @@ dist-webpack-swc
 dist-rspack
 dist-snowpack
 dist-rsbuild
+dist-gulp
 esbuild-serve
 next-env.d.ts
 /packages/projects/**/dist-*
