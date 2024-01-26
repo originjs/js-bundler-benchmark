@@ -207,6 +207,9 @@ importers:
       '@farmfe/plugin-react':
         specifier: ^0.4.3
         version: 0.4.3
+      '@parcel/config-default':
+        specifier: ^2.11.0
+        version: 2.11.0(@parcel/core@2.11.0)(postcss@8.4.33)
       '@pmmmwh/react-refresh-webpack-plugin':
         specifier: ^0.5.11
         version: 0.5.11(react-refresh@0.14.0)(webpack-dev-server@4.15.1)(webpack@5.89.0)
