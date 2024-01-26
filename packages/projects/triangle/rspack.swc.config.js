@@ -38,7 +38,7 @@ module.exports = function (env, argv) {
 			main: "./src/index.tsx"
 		},
 		output: {
-			path: path.resolve(__dirname, './dist-rspack')
+			path: path.resolve(__dirname, './dist-rspack-swc')
 		},
 		target: 'browserslist',
 		module: {
