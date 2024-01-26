@@ -86,9 +86,18 @@ class BuildTool {
 
 export const buildTools = [
     new BuildTool(
-        "Rspack",
-        8080,
+        "Rspack(babel)",
+        8079,
         "start:rspack",
+        /compiled in (.+m?s)/,
+        () => {
+        },
+        "build:rspack"
+    ),
+    new BuildTool(
+        "Rspack(swc)",
+        8080,
+        "start:rspack-swc",
         /compiled in (.+m?s)/,
         () => {
         },
