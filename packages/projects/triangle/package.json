@@ -16,6 +16,10 @@
     "@farmfe/core": "^0.14.12",
     "@farmfe/plugin-react": "^0.4.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
     "@rsbuild/core": "^0.3.5",
     "@rsbuild/plugin-react": "^0.3.5",
     "@rspack/cli": "^0.4.1",
@@ -37,6 +41,9 @@
     "next": "^14.0.3",
     "parcel": "^2.10.3",
     "react-refresh": "^0.14.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-server": "^0.7.0",
+    "rollup-plugin-typescript2": "^0.36.0",
     "snowpack": "^3.8.8",
     "style-loader": "^3.3.3",
     "swc-loader": "^0.2.3",
@@ -63,6 +70,8 @@
     "start:parcel": "parcel index.html --dist-dir dist-parcel",
     "start:snowpack": "snowpack dev",
     "start:rsbuild": "rsbuild dev",
+    "start:rollup": "cross-env NODE_ENV=development rollup -c --watch",
+
     "build:rspack": "rspack build",
     "build:rspack-swc": "rspack build --config rspack.swc.config.js",
     "build:vite": "vite build",
@@ -74,7 +83,8 @@
     "build:farm": "cross-env IS_BUILD=1 farm build",
     "build:esbuild": "esbuild src/index.tsx --bundle --minify --target=chrome87,firefox78,safari14,edge88 --outdir=dist-esbuild",
     "build:snowpack": "snowpack build",
-    "build:rsbuild": "rsbuild build"
+    "build:rsbuild": "rsbuild build",
+    "build:rollup": "cross-env NODE_ENV=production rollup -c"
   },
   "browserslist": [
     "Chrome >= 87, Firefox >= 78, Safari >= 14, Edge >= 88"
