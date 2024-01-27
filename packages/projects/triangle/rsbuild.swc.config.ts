@@ -7,8 +7,9 @@ export default defineConfig({
   },
   output: {
     distPath: {
-      root: 'dist-rsbuild'
+      root: 'dist-rsbuild-swc'
     },
   },
+  // TODO 删了也能运行???
   plugins: [pluginReact()],
 });

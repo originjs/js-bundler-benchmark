@@ -228,6 +228,9 @@ importers:
       '@rsbuild/core':
         specifier: ^0.3.5
         version: 0.3.7
+      '@rsbuild/plugin-babel':
+        specifier: ^0.3.9
+        version: 0.3.9(@rsbuild/core@0.3.7)
       '@rsbuild/plugin-react':
         specifier: ^0.3.5
         version: 0.3.7(@rsbuild/core@0.3.7)
@@ -3701,6 +3704,22 @@ packages:
       postcss: 8.4.33
     dev: true
 
+  /@rsbuild/plugin-babel@0.3.9(@rsbuild/core@0.3.7):
+    resolution: {integrity: sha512-vZVbpVazwX5Faus6upVb6T0HaLq6z/9Z8tKSdQ5Mmd38LcCVH+uJVHf6CGdlm/iQ0lnm0su7VsCQGXruZv3c4Q==}
+    peerDependencies:
+      '@rsbuild/core': ^0.3.9
+    dependencies:
+      '@babel/core': 7.23.7
+      '@babel/preset-typescript': 7.23.3(@babel/core@7.23.7)
+      '@rsbuild/core': 0.3.7
+      '@rsbuild/shared': 0.3.9
+      '@types/babel__core': 7.20.5
+      upath: 2.0.1
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - supports-color
+    dev: true
+
   /@rsbuild/plugin-react@0.3.7(@rsbuild/core@0.3.7):
     resolution: {integrity: sha512-vKjVMZBHp1EEodVsPW5E9cOaA7UvnXxK7ACjWRvuRlMK54VUkYE/npzB2QAxXU3bKK2KiYOH78YYpiHyz1mkFQ==}
     peerDependencies:
@@ -3718,6 +3737,17 @@ packages:
     resolution: {integrity: sha512-XY82H5CzymyuUC3zGxTWDgKEXWXiQnt1kmPQS1T1mS6jwo8SSwTcEub+E5vtpAOn6r1tNGGHZre+7EVJtF51nQ==}
     dependencies:
       '@rspack/core': 0.5.0(@swc/helpers@0.5.3)
+      caniuse-lite: 1.0.30001579
+      lodash: 4.17.21
+      postcss: 8.4.33
+    transitivePeerDependencies:
+      - '@swc/helpers'
+    dev: true
+
+  /@rsbuild/shared@0.3.9:
+    resolution: {integrity: sha512-MVsaoY5Lj/3jTvy71c+C4ZWweakFMdNKtk//aBxxP2H+YdGEdxOMG/H3M7mJ+PnTDO6TH3rK6D3zWYeP7gzXXQ==}
+    dependencies:
+      '@rspack/core': 0.5.2
       caniuse-lite: 1.0.30001579
       lodash: 4.17.21
       postcss: 8.4.33
@@ -12200,6 +12230,11 @@ packages:
   /untildify@4.0.0:
     resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /upath@2.0.1:
+    resolution: {integrity: sha512-1uEe95xksV1O0CYKXo8vQvN1JEbtJp7lb7C5U9HMsIp6IVwntkH/oNUzyVNQSd4S1sYk2FpSSW44FqMc8qee5w==}
+    engines: {node: '>=4'}
     dev: true
 
   /update-browserslist-db@1.0.11(browserslist@4.21.10):
