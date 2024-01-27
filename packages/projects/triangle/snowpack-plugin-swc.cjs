@@ -15,7 +15,7 @@ module.exports = function plugin(snowpackConfig, options = {}) {
                 options.transformOptions
             )
             if (code) {
-                // replace process.env.node otherwise browser error because of without process obj
+                // replace process.env.NODE_ENV otherwise browser error because of without process
                 code = code.replace(/process\.env\.NODE_ENV/g, `'${env}'`)
             }
 
