@@ -1,19 +1,23 @@
-const rspack = require('@rspack/core');
-const ReactRefreshPlugin = require('@rspack/plugin-react-refresh');
-const path = require('path');
+import rspack from '@rspack/core'
+import ReactRefreshPlugin from '@rspack/plugin-react-refresh'
+import {resolve} from 'path';
+import {fileURLToPath} from "node:url";
+import {dirname} from "node:path";
 
-module.exports = function (env, argv) {
+const dir = dirname(resolve(fileURLToPath(import.meta.url)));
+
+export default function (env, argv) {
     const isBuild = argv['_'][0] === 'build'
     /**
      * @type {import('@rspack/cli').Configuration}
      */
     return {
-        context: __dirname,
+        context: dir,
         entry: {
             main: "./src/index.tsx"
         },
         output: {
-            path: path.resolve(__dirname, './dist-rspack')
+            path: resolve(dir, './dist-rspack')
         },
         target: 'browserslist',
         module: {
