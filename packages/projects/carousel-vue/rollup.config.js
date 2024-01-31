@@ -5,7 +5,7 @@ import postcss from 'rollup-plugin-postcss'
 export default {
   input: 'src/main.ts',
   output: {
-    file: 'dist/index.umd.js',
+    file: 'dist-rollup/index.umd.js',
     format: 'umd',
     name: 'vue-carousel'
   },
