@@ -1,207 +1,181 @@
-import {appendFileSync, readFileSync, writeFileSync} from "fs";
-import playwright from "playwright";
-import {parseArgs} from './parseArgs.mjs'
-import {buildTools} from "./buildTools.mjs"
-import {fileURLToPath} from "node:url";
-import {resolve, dirname} from "path";
+import { appendFileSync, readFileSync, writeFileSync } from 'fs';
+import playwright from 'playwright';
+import { parseArgs } from './parseArgs.mjs';
+import { buildTools } from './buildTools.mjs';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'path';
 
-const {
-    type,
-    count,
-    hotRun,
-    outputMd,
-    projectName
-} = parseArgs()
-const runDev = type === 'all' || type === 'dev'
-const runBuild = type === 'all' || type === 'build'
-const workspaceName = projectName || "triangle-demo"
+const { projectName, projectIndex } = parseArgs();
 
-let rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
-let leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/react/src/components', 'Carousel_0_0.tsx')
+const workspaceName = projectName || 'triangle-demo';
 
-if(workspaceName == "triangle-demo"){
-    rootFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/triangle/src/comps', 'triangle.jsx');
-    leafFilePath = resolve(fileURLToPath(import.meta.url), '../../projects/triangle/src/comps',  'triangle_1_1_2_1_2_2_1.jsx');
+let rootFilePath = resolve(
+  fileURLToPath(import.meta.url),
+  '../../projects/react/src/components',
+  'Carousel_0_0.tsx'
+);
+let leafFilePath = resolve(
+  fileURLToPath(import.meta.url),
+  '../../projects/react/src/components',
+  'Carousel_0_0.tsx'
+);
+
+if (workspaceName == 'triangle-demo') {
+  rootFilePath = resolve(
+    fileURLToPath(import.meta.url),
+    '../../projects/triangle/src/comps',
+    'triangle.jsx'
+  );
+  leafFilePath = resolve(
+    fileURLToPath(import.meta.url),
+    '../../projects/triangle/src/comps',
+    'triangle_1_1_2_1_2_2_1.jsx'
+  );
 }
 
 const originalRootFileContent = readFileSync(rootFilePath, 'utf-8');
 const originalLeafFileContent = readFileSync(leafFilePath, 'utf-8');
 
-console.log(`Running ${hotRun ? 'hot' : 'cold'} run ${count} times`)
-console.log()
+const results = [];
+const browser = await playwright.chromium.launch();
 
-const results = []
+const array = projectIndex == -1 ? buildTools : [buildTools[projectIndex]];
 
-if (runDev) {
-    const browser = await playwright.chromium.launch();
+async function start() {
+  for (const buildTool of array) {
+    try {
+      let totalResult = {};
+      // 第一次启动：清理缓存，冷启动
+      await cleanServerCache(buildTool);
+      const serverStartTime4Cold = await startServer(buildTool);
+      const { time: loadPageTime4Cold } = await openBrowser(buildTool);
 
-    for (const buildTool of buildTools) {
-        const totalResult = {}
+      await closePage();
+      await stopServer(buildTool);
+      await giveSomeRest();
 
-        if (hotRun) {
-            console.log(`Populate cache: ${buildTool.name}`);
-            const page = await (await browser.newContext()).newPage();
-            await buildTool.startServer(workspaceName);
-            await page.goto(`http://localhost:${buildTool.port}`, {waitUntil: 'load'});
-            buildTool.stop();
-            await page.close();
-        }
+      // 第二次启动：没有清理缓存，热启动
+      const serverStartTime4Hot = await startServer(buildTool);
+      const { time: loadPageTime4Hot, page } = await openBrowser(buildTool);
 
-        for (let i = 0; i < count; i++) {
-            try {
-                console.log(`Running: ${buildTool.name} (${i + 1})`);
+      const rootHmrTime = await hmrTime(page, rootFilePath);
+      await giveSomeRest(1000);
+      const leafHmrTime = await hmrTime(page, leafFilePath);
 
-                if (!hotRun) {
-                    await buildTool.clean?.()
-                }
+      await closePage();
+      await stopServer(buildTool);
 
-                const page = await (await browser.newContext()).newPage();
-                await new Promise((resolve) => setTimeout(resolve, 300)); // give some rest
+      const buildTime = await build(buildTool);
 
-                const loadPromise = page.waitForEvent('load', {timeout: 300000});
-                const pageLoadStart = Date.now();
-                const serverStartTime = await buildTool.startServer(workspaceName);
-                page.goto(`http://localhost:${buildTool.port}`);
-                await loadPromise;
-                totalResult.startup ??= 0;
-                totalResult.startup += (Date.now() - pageLoadStart);
-                if (serverStartTime !== null) {
-                    totalResult.serverStart ??= 0;
-                    totalResult.serverStart += serverStartTime;
-                }
+      const pkgSize = await pack(buildTool);
 
-                await new Promise((resolve) => setTimeout(resolve, 500));
-
-                if (!buildTool.skipHmr) {
-                    const rootConsolePromise = page.waitForEvent('console', {
-                        timeout: 300000, predicate: e => {
-                            const logText = e.text();
-                            console.log(logText)
-                            return logText.includes('root hmr');
-                        }
-                    });
-                    appendFileSync(rootFilePath, `
-            console.log('root hmr');
-          `)
-                    const hmrRootStart = Date.now();
-                    await rootConsolePromise;
-                    totalResult.rootHmr ??= 0;
-                    totalResult.rootHmr += (Date.now() - hmrRootStart);
-
-                    await new Promise((resolve) => setTimeout(resolve, 500));
-
-                    const leafConsolePromise = page.waitForEvent('console', {
-                        timeout: 300000, predicate: e => {
-                            const logText = e.text();
-                            console.log(logText)
-                            return logText.includes('leaf hmr');
-                        }
-                    });
-                    appendFileSync(leafFilePath, `
-            console.log('leaf hmr');
-          `)
-                    const hmrLeafStart = Date.now();
-                    await leafConsolePromise;
-                    totalResult.leafHmr ??= 0;
-                    totalResult.leafHmr += (Date.now() - hmrLeafStart);
-                }
-
-                buildTool.stop();
-                await page.close();
-            } finally {
-                writeFileSync(rootFilePath, originalRootFileContent);
-                writeFileSync(leafFilePath, originalLeafFileContent);
-            }
-        }
-
-        const result = Object.fromEntries(Object.entries(totalResult).map(([k, v]) => [k, v ? (v / count).toFixed(1) : v]))
-        results.push({name: buildTool.name, result})
+      totalResult = {
+        bundler: buildTool.name,
+        serverStartTime4Cold,
+        loadPageTime4Cold,
+        serverStartTime4Hot,
+        loadPageTime4Hot,
+        rootHmrTime,
+        leafHmrTime,
+        buildTime,
+      };
+      results.push(totalResult);
+    } finally {
+      writeFileSync(rootFilePath, originalRootFileContent);
+      writeFileSync(leafFilePath, originalLeafFileContent);
     }
+  }
 
-    await browser.close();
+  console.table(results);
 }
 
-if (runBuild) {
-    for (const buildTool of buildTools) {
-        if (buildTool.buildScript) {
-            await buildTool.clean?.()
+function printResult() {
+  const result = Object.fromEntries(
+    Object.entries(totalResult).map(([k, v]) => [
+      k,
+      v ? (v / count).toFixed(1) : v, //求平均
+    ])
+  );
 
-            let sum = 0;
-            for (let i = 0; i < count; i++) {
-                console.log(`Running: ${buildTool.name} (${i + 1})`);
-                const productionStart = Date.now();
-                await buildTool.startProductionBuild(workspaceName)
-                const productionEnd = Date.now()
-                sum += productionEnd - productionStart
-            }
-
-            const matchedResult = results.find((item) => item.name === buildTool.name)
-            if (matchedResult) {
-                matchedResult.result.production = (sum / count).toFixed(1);
-            } else {
-                results.push({name: buildTool.name, result: {production: (sum / count).toFixed(1)}})
-            }
-        }
-    }
+  results.push({ name: buildTool.name, result });
 }
 
-console.log('-----')
-console.log('Results')
-
-if (outputMd) {
-    const rows = [
-        'name',
-        ...(runDev ? ['startup', 'Root HMR', 'Leaf HMR'] : []),
-        ...(runBuild ? ['Build time'] : [])
-    ]
-    let out = `| ${rows.join(' | ')} |\n`
-    out += `| ${rows.map((v, i) => i === 0 ? ' --- ' : ' ---: ').join('|')} |\n`
-    out += results
-        .map(
-            ({name, result}) =>
-                `| ${[
-                    name,
-                    ...(runDev
-                        ? [
-                            `${result.startup}ms${
-                                result.serverStart
-                                    ? ` (including server start up time: ${result.serverStart}ms)`
-                                    : ''
-                            }`,
-                            `${result.rootHmr ? `${result.rootHmr}ms` : '---'}`,
-                            `${result.leafHmr ? `${result.leafHmr}ms` : '---'}`
-                        ]
-                        : []),
-                    ...(runBuild
-                            ? [`${result.production ? `${result.production}ms` : '---'}`]
-                            : []
-                    )
-                ].join(' | ')} |`
-        )
-        .join('\n')
-    console.log(out)
-} else {
-    const out = Object.fromEntries(results.map(({name, result}) => [
-        name,
-        {
-            ...(runDev
-                ? {
-                    'startup time': `${result.startup}ms${
-                        result.serverStart
-                            ? ` (including server start up time: ${result.serverStart}ms)`
-                            : ''
-                    }`,
-                    'Root HMR time': `${result.rootHmr ? `${result.rootHmr}ms` : '---'}`,
-                    'Leaf HMR time': `${result.leafHmr ? `${result.leafHmr}ms` : '---'}`,
-                }
-                : {}),
-            ...(runBuild
-                    ? {
-                        'Build time': `${result.production ? `${result.production}ms` : '---'}`
-                    }
-                    : {}
-            )
-        }
-    ]))
-    console.table(out)
+async function giveSomeRest(time = 300) {
+  return await new Promise((resolve) => setTimeout(resolve, time));
 }
+
+async function openBrowser(bundler) {
+  const page = await (await browser.newContext()).newPage();
+  await giveSomeRest();
+  const loadPromise = page.waitForEvent('load', { timeout: 30000 }); // 30s
+  const pageLoadStart = Date.now();
+  page.goto(`http://localhost:${bundler.port}`);
+  await loadPromise;
+  return { page, time: Date.now() - pageLoadStart };
+}
+
+async function closePage() {
+  const colseFun = [];
+  for (const context of browser.contexts()) {
+    colseFun.push(context.close);
+  }
+  return Promise.all(colseFun);
+}
+
+async function cleanServerCache(bundler) {
+  console.log(`clean cache: ${bundler.name}`);
+  await bundler.clean?.();
+}
+
+async function startServer(bundler) {
+  return await bundler.startServer(workspaceName);
+}
+
+async function startProductionBuild(bundler) {
+  return await bundler.startProductionBuild(workspaceName);
+}
+
+async function stopServer(bundler) {
+  return await bundler.stop();
+}
+
+async function hmrTime(page, filepath) {
+  const testCodeText = 'Test hmr reaction time';
+  const rootConsolePromise = page.waitForEvent('console', {
+    timeout: 10000,
+    predicate: (e) => {
+      const logText = e.text();
+      return logText.includes(testCodeText);
+    },
+  });
+  appendFileSync(filepath, `console.log('${testCodeText}');`);
+  const hmrRootStart = Date.now();
+  try {
+    await rootConsolePromise;
+  } catch (e) {
+    return -1;
+  }
+  return Date.now() - hmrRootStart;
+}
+
+async function build(bundler) {
+  if (bundler.buildScript) {
+    await cleanServerCache(bundler);
+    await giveSomeRest(1000);
+    const productionStart = Date.now();
+    await startProductionBuild(bundler);
+    const productionEnd = Date.now();
+    return productionEnd - productionStart;
+  }
+  return 0;
+}
+
+async function pack(bundler){
+  // 找到构建的目录
+  // tgz目录
+  // 获取tgz包大小
+  return -1;
+}
+
+await start();
+process.exit();
