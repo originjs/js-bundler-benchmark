@@ -66,7 +66,7 @@
     "start:webpack-swc": "webpack serve --config ./webpack.swc.config.js --mode development",
     "start:rspack": "rspack serve",
     "start:rspack-swc": "rspack serve --config rspack.swc.config.js",
-    "start:esbuild": "node ./esbuild.js --watch",
+    "start:esbuild": "node ./esbuild.config.js --watch",
     "start:turbopack": "next dev --turbo -p 3000",
     "start:parcel": "parcel index.html --dist-dir dist-parcel  --config .babel.parcelrc",
     "start:parcel-swc": "parcel index.html --dist-dir dist-parcel-swc",
