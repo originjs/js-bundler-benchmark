@@ -12,6 +12,7 @@ export default {
     '@snowpack/plugin-react-refresh'
   ],
   devOptions: {
+    open:"none",
     port: 1236,
     hmr: true
   },

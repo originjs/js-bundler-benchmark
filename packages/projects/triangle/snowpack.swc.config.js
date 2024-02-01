@@ -27,6 +27,7 @@ export default {
         }]
     ],
     devOptions: {
+        open:"none",
         port: 1237,
         hmr: true
     },
