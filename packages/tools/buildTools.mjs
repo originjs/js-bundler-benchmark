@@ -182,4 +182,52 @@ export const buildTools = [
         ]),
         "build:parcel"
     ),
+    new BuildTool(
+        "Parcel-swc",
+        1234,
+        "start:parcel-swc",
+        /Server running/,
+        () => Promise.all([
+            rm(path.join(_dirname, '../.parcel-cache'), {force: true, recursive: true, maxRetries: 5}),
+            rm(path.join(_dirname, '../dist-parcel'), {force: true, recursive: true, maxRetries: 5})
+        ]),
+        "build:parcel-swc"
+    ),
+    new BuildTool(
+        "snowpack",
+        1236,
+        "start:snowpack",
+        /Server started in (.+m?s)/,
+        () => rm(path.join(_dirname, '../node_modules/.cache'), {force: true, recursive: true, maxRetries: 5}),
+        "build:snowpack"
+    ),
+    new BuildTool(
+        "snowpack-swc",
+        1237,
+        "start:snowpack-swc",
+        /Server started in (.+m?s)/,
+        () => rm(path.join(_dirname, '../node_modules/.cache'), {force: true, recursive: true, maxRetries: 5}),
+        "build:snowpack-swc"
+    ),
+    new BuildTool(
+        "rsbuild-babel",
+        8080,
+        "start:rsbuild-babel",
+        /Client compiled in (.+m?s)/,
+        () => {
+        },
+        "build:rsbuild-babel"
+    ),
+    new BuildTool(
+        "rsbuild-swc",
+        1238,
+        "start:rsbuild-swc",
+        /Client compiled in (.+m?s)/,
+        () => {
+        },
+        "build:rsbuild-swc"
+    ),
+
+    // rollup
+    // rollup-swc
 ]
