@@ -1,6 +1,6 @@
-# performance-compare
+# @originjs/js-bundler-benchmark
 
-## reference
+## Reference
 - https://github.com/sapphi-red/performance-compare
 - https://github.com/farm-fe/performance-compare
 
@@ -12,7 +12,7 @@ The `-p` parameter switches the evaluation project.
 
 ## Results of the last assessment(2024-02-01)
 
-| (index) |      bundler      | serverStartTime4Cold | loadPageTime4Cold | serverStartTime4Hot | loadPageTime4Hot | rootHmrTime | leafHmrTime | buildTime |
+| num|      bundler      | Cold start time(ms) | Page load time - cold start(ms) | Hot start time(ms) | Page load time - hot start(ms) | HMR - root	(ms) | HMR - leaf(ms) | Build time(ms) |
 |-        |-                  |-                     |-                  |-                    |-                 |-            |-            |-          |
 |    0    |  'Rspack(babel)'  |         6790         |        320        |        7040         |       316        |     164     |     130     |   8378    |
 |    1    |   'Rspack(swc)'   |         1310         |        543        |        1290         |       357        |     173     |     105     |   8493    |
