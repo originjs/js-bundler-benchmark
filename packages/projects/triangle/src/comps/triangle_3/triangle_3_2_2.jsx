@@ -1,8 +1,8 @@
 import React from "react";
 
-import A from './triangle_3_2_2_1'
-import B from './triangle_3_2_2_2'
-import C from './triangle_3_2_2_3'
+import A from './triangle_3_2_2_1.jsx'
+import B from './triangle_3_2_2_2.jsx'
+import C from './triangle_3_2_2_3.jsx'
 
 let EFFECT_PROPS = {};
 

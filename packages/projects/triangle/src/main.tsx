@@ -1,7 +1,7 @@
 import React from 'react';
 import './main.css';
 
-import Triangle from './comps/triangle';
+import Triangle from './comps/triangle.jsx';
 
 export function Main() {
   return (

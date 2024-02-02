@@ -15,3 +15,4 @@ dist-gulp
 esbuild-serve
 next-env.d.ts
 /packages/projects/**/dist-*
+/packages/projects/**/.cache
