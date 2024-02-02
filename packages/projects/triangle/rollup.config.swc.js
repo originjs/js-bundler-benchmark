@@ -16,13 +16,13 @@ const serverConfig = [];
 if (!isProdMode) {
     serverConfig.push(server({
         open: true,
-        contentBase: 'dist-rollup',
+        contentBase: 'dist-rollup-swc',
         port: 8084
     }));
 //     copy index.html to dist
     const projectDir = dirname(fileURLToPath(import.meta.url));
     const srcPath = resolve(projectDir, "index.rollup.html");
-    const distDir = resolve(projectDir, 'dist-rollup/');
+    const distDir = resolve(projectDir, 'dist-rollup-swc/');
     if (!existsSync(distDir)) {
         mkdirSync(distDir);
     }
@@ -32,7 +32,7 @@ if (!isProdMode) {
 export default {
     input: 'src/index.tsx',
     output: {
-        file: 'dist-rollup/index.js',
+        file: 'dist-rollup-swc/index.js',
         format: 'esm',
         sourcemap: !isProdMode
     },

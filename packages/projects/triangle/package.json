@@ -44,6 +44,7 @@
     "next": "^14.0.3",
     "parcel": "^2.10.3",
     "react-refresh": "^0.14.0",
+    "rollup": "^4.9.6",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-server": "^0.7.0",
     "rollup-plugin-swc3": "^0.11.0",
@@ -92,7 +93,7 @@
     "build:rsbuild-swc": "rsbuild build --config rsbuild.swc.config.ts",
     "build:rsbuild-babel": "rsbuild build --config rsbuild.config.babel.ts",
     "build:rollup": "cross-env NODE_ENV=production rollup -c",
-    "build:rollup-swc": "cross-env NODE_ENV=production rollup --config rollup.config.swc.js "
+    "build:rollup-swc": "cross-env NODE_ENV=production rollup --config rollup.config.swc.js"
   },
   "browserslist": [
     "Chrome >= 87, Firefox >= 78, Safari >= 14, Edge >= 88"
