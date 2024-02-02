@@ -12,6 +12,10 @@
     "// note with resolve.extensions": "parcel doesn't provide a way to specify it",
     "// note with sourcemaps": "parcel includes sourcesContent field."
   },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8.15"
+  },
   "alias": {
     "process": false
   }
