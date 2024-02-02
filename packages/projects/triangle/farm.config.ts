@@ -13,7 +13,7 @@ const config: UserConfig = {
       extensions: ['tsx', 'jsx', 'ts', 'js', 'json']
     },
     output: {
-      path: './build',
+      path: './dist-farm',
     },
     sourcemap: !isBuild,
     presetEnv: {
