@@ -6,7 +6,6 @@ export default defineConfig({
         react: '@esm-bundle/react',
         'react-dom': '@esm-bundle/react-dom',
         "htm/preact": "htm/react",
-        preact: 'react',
     },
     out: "dist-wmr",
     public: "src"
