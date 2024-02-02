@@ -19,35 +19,44 @@ class BuildTool {
 
     async startServer(workspaceName) {
         const child = spawn(`pnpm --filter "${workspaceName}"`, ["run", this.script], {
-            stdio: 'pipe',
+            stdio: ['pipe', 'pipe', 'pipe'],
             shell: true,
             env: {...process.env, NO_COLOR: '1'}
         });
         this.child = child;
-        return new Promise((resolve, reject) => {
-            child.stdout.on('data', (data) => {
+
+        return new Promise((resolve) => {
+            const timerNum = setTimeout(resolve,120000);
+            const _resolve = (args)=>{
+                if(timerNum){
+                    clearTimeout(timerNum);
+                }
+                resolve(args);                
+            }
+
+            const listenMessages = (data) => {
                 console.log(data.toString());
                 const match = this.startedRegex.exec(data);
                 if (match) {
-                    if (!match[1]) {
-                        resolve(null)
-                        return
-                    }
-
-                    const number = parseFloat(match[1].replace(/m?s$/, '').trim())
-                    resolve(number * (match[1].endsWith('ms') ? 1 : 1000));
+                  if (!match[1]) {
+                    _resolve(null);
+                    return;
+                  }
+            
+                  const number = parseFloat(match[1].replace(/m?s$/, '').trim());
+                  _resolve(number * (match[1].endsWith('ms') ? 1 : 1000));
                 }
-            });
-            child.on('error', (error) => {
-                console.log(`${this.name} error: ${error.message}`);
-                reject(error);
-            });
+            }
+
+            child.stdout.on('data', (data) => listenMessages(data));
+            child.stderr.on('data', (data) => listenMessages(data));
+
             child.on('exit', (code) => {
                 if (code !== null && code !== 0 && code !== 1) {
-                    console.log(`${this.name} exit: ${code}`);
-                    reject(code);
+                    console.error(`${this.name} exit: ${code}`);
+                    _resolve(code);
                 }
-            });
+            });            
         });
     }
 
@@ -227,7 +236,22 @@ export const buildTools = [
         },
         "build:rsbuild-swc"
     ),
-
-    // rollup
-    // rollup-swc
+    new BuildTool(
+        "rollup",
+        8083,
+        "start:rollup",
+        /created dist-rollup\/index.js in (.+m?s)/,
+        () => {
+        },
+        "build:rollup"
+    ),
+    new BuildTool(
+        "rollup-swc",
+        8084,
+        "start:rollup-swc",
+        /created dist-rollup-swc\/index.js in (.+m?s)/,
+        () => {
+        },
+        "build:rollup-swc"
+    )
 ]

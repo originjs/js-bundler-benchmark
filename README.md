@@ -1,9 +1,5 @@
 # @originjs/js-bundler-benchmark
 
-## Reference
-- https://github.com/sapphi-red/performance-compare
-- https://github.com/farm-fe/performance-compare
-
 ## Run benchmarks:
 ```bash
 node packages/tools/benchmark.mjs
@@ -29,3 +25,7 @@ The `-p` parameter switches the evaluation project.
 |   12    |  'snowpack-swc'   |          50          |       9752        |         37          |       8595       |    2727     |    2357     |   14612   |
 |   13    |  'rsbuild-babel'  |         810          |        546        |         690         |       522        |    1108     |     330     |   2234    |
 |   14    |   'rsbuild-swc'   |         940          |        632        |         950         |       633        |     235     |     215     |   2607    |
+
+## Reference
+- https://github.com/sapphi-red/performance-compare
+- https://github.com/farm-fe/performance-compare
