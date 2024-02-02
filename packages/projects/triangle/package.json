@@ -13,11 +13,14 @@
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@esm-bundle/react": "17.0.2-fix.1",
+    "@esm-bundle/react-dom": "17.0.2-fix.0",
     "@farmfe/cli": "^0.6.0",
     "@farmfe/core": "^0.16.3",
     "@farmfe/plugin-react": "^0.6.0",
     "@parcel/config-default": "^2.11.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@prefresh/core": "^1.5.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -39,10 +42,12 @@
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "esbuild": "^0.19.8",
+    "htm": "^3.1.1",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
     "next": "^14.0.3",
     "parcel": "^2.10.3",
+    "preact": "^10.19.3",
     "react-refresh": "^0.14.0",
     "rollup": "^4.9.6",
     "rollup-plugin-postcss": "^4.0.2",
@@ -57,7 +62,8 @@
     "vite": "^5.0.4",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.1",
+    "wmr": "^3.8.0"
   },
   "scripts": {
     "start:farm": "farm start",
@@ -77,6 +83,7 @@
     "start:rsbuild-babel": "rsbuild dev --config rsbuild.config.babel.ts",
     "start:rollup": "cross-env NODE_ENV=development rollup -c --watch",
     "start:rollup-swc": "cross-env NODE_ENV=development rollup --config rollup.config.swc.js --watch",
+    "start:wmr": "cross-env NODE_ENV=development wmr",
     "build:rspack": "rspack build",
     "build:rspack-swc": "rspack build --config rspack.swc.config.js",
     "build:vite": "vite build",
@@ -93,7 +100,8 @@
     "build:rsbuild-swc": "rsbuild build --config rsbuild.swc.config.ts",
     "build:rsbuild-babel": "rsbuild build --config rsbuild.config.babel.ts",
     "build:rollup": "cross-env NODE_ENV=production rollup -c",
-    "build:rollup-swc": "cross-env NODE_ENV=production rollup --config rollup.config.swc.js"
+    "build:rollup-swc": "cross-env NODE_ENV=production rollup --config rollup.config.swc.js",
+    "build:wmr": "cross-env NODE_ENV=production wmr build"
   },
   "browserslist": [
     "Chrome >= 87, Firefox >= 78, Safari >= 14, Edge >= 88"
