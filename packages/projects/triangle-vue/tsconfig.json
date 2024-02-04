@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "es2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  },
+  "files": [],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "types/shims-vue.d.ts", "types/vue-shims.d.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
+    }
+  ]
+}
