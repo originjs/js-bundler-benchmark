@@ -1,16 +1,9 @@
 const isProdMode = process.env.NODE_ENV === 'production';
 export default {
   mode: 'production',
-  alias: {
-    '@': './src'
-  },
   mount: {
-    'snowpack-public': {
-      url: '/',
-      static: true
-    },
-    src: '/src',
-    'src/components': '/'
+    'snowpack-public':'/',
+    src:'/src'
   },
   plugins: [
     '@snowpack/plugin-vue',
