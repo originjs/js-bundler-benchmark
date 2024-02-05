@@ -6,11 +6,8 @@
     "benchmark": "node packages/tools/benchmark.mjs",
     "benchmark:react-demo": "node packages/tools/benchmark.mjs -p=react-demo",
     "benchmark:dev": "node packages/tools/benchmark.mjs benchmark.mjs -t=dev",
-    "benchmark:build": "node packages/tools/benchmark.mjs benchmark.mjs -t=build"
-  },
-  "// parcel configs": {
-    "// note with resolve.extensions": "parcel doesn't provide a way to specify it",
-    "// note with sourcemaps": "parcel includes sourcesContent field."
+    "benchmark:build": "node packages/tools/benchmark.mjs benchmark.mjs -t=build",
+    "prepare": "husky init"
   },
   "engines": {
     "node": ">=18",
@@ -18,5 +15,15 @@
   },
   "alias": {
     "process": false
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.1"
+  },
+  "lint-staged": {
+    "***.js|ts|cjs|mjs|d.cts|d.mts|jsx|tsx|json|jsonc": [
+      "biome check --apply --no-errors-on-unmatched"
+    ]
   }
 }
