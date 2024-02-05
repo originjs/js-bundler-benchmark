@@ -7,13 +7,14 @@ import url from "url";
 const _dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 class BuildTool {
-    constructor(name, port, script, startedRegex, clean, buildScript, skipHmr = false) {
+    constructor(name, port, script, startedRegex, clean, buildScript,distDir, skipHmr = false) {
         this.name = name;
         this.port = port;
         this.script = script;
         this.startedRegex = startedRegex;
         this.clean = clean;
         this.buildScript = buildScript;
+        this.distDir = distDir? path.join(_dirname, "../projects/triangle", distDir) : distDir;
         this.skipHmr = skipHmr;
     }
 
@@ -99,18 +100,18 @@ export const buildTools = [
         8079,
         "start:rspack",
         /compiled in (.+m?s)/,
-        () => {
-        },
-        "build:rspack"
+        null,
+        "build:rspack",
+        "dist-rspack"        
     ),
     new BuildTool(
         "Rspack(swc)",
         8080,
         "start:rspack-swc",
         /compiled in (.+m?s)/,
-        () => {
-        },
-        "build:rspack"
+        null,
+        "build:rspack-swc",
+        "dist-rspack-swc"        
     ),
     new BuildTool(
         "esbuild",
@@ -127,7 +128,8 @@ export const buildTools = [
                 }
             }
         },
-        "build:esbuild"
+        "build:esbuild",
+        "dist-esbuild"
     ),
     new BuildTool(
         "Turbopack",
@@ -135,6 +137,7 @@ export const buildTools = [
         "start:turbopack",
         /Ready in (.+m?s)/,
         () => rm(path.join(_dirname, '../.next'), {force: true, recursive: true, maxRetries: 5}),
+        "",
         ""
     ),
     new BuildTool(
@@ -142,18 +145,18 @@ export const buildTools = [
         8081,
         "start:webpack",
         /compiled successfully in (.+m?s)/,
-        () => {
-        },
-        "build:webpack"
+        null,
+        "build:webpack",
+        "dist-webpack"
     ),
     new BuildTool(
         "Webpack (swc)",
         8082,
         "start:webpack-swc",
         /compiled successfully in (.+ m?s)/,
-        () => {
-        },
-        "build:webpack-swc"
+        null,
+        "build:webpack-swc",
+        "dist-webpack-swc"
     ),
     new BuildTool(
         "Vite",
@@ -161,15 +164,17 @@ export const buildTools = [
         "start:vite",
         /ready in (.+ m?s)/,
         () => rm(path.join(_dirname, '../node_modules/.vite'), {force: true, recursive: true, maxRetries: 5}),
-        "build:vite"
+        "build:vite",
+        "dist-vite"
     ),
     new BuildTool(
         "Vite (swc)",
         5174,
         "start:vite-swc",
         /ready in (.+ m?s)/,
-        () => rm(path.join(_dirname, '../node_modules/.vite-swc'), {force: true, recursive: true, maxRetries: 5}),
-        "build:vite-swc"
+        () => rm(path.join(_dirname, '../node_modules/.vite-swc'), {force: true, recursive: true, maxRetries: 5}),        
+        "build:vite-swc",
+        "dist-vite-swc"
     ),
     new BuildTool(
         "Farm",
@@ -178,6 +183,7 @@ export const buildTools = [
         /Ready in (.+m?s)/,
         () => rm(path.join(_dirname, '../node_modules/.farm'), {force: true, recursive: true, maxRetries: 5}),
         "build:farm",
+        "dist-farm",
         true
     ),
     new BuildTool(
@@ -189,7 +195,8 @@ export const buildTools = [
             rm(path.join(_dirname, '../.parcel-cache'), {force: true, recursive: true, maxRetries: 5}),
             rm(path.join(_dirname, '../dist-parcel'), {force: true, recursive: true, maxRetries: 5})
         ]),
-        "build:parcel"
+        "build:parcel",
+        "dist-parcel"
     ),
     new BuildTool(
         "Parcel-swc",
@@ -200,7 +207,8 @@ export const buildTools = [
             rm(path.join(_dirname, '../.parcel-cache'), {force: true, recursive: true, maxRetries: 5}),
             rm(path.join(_dirname, '../dist-parcel'), {force: true, recursive: true, maxRetries: 5})
         ]),
-        "build:parcel-swc"
+        "build:parcel-swc",
+        "dist-parcel-swc"
     ),
     new BuildTool(
         "snowpack",
@@ -208,7 +216,8 @@ export const buildTools = [
         "start:snowpack",
         /Server started in (.+m?s)/,
         () => rm(path.join(_dirname, '../node_modules/.cache'), {force: true, recursive: true, maxRetries: 5}),
-        "build:snowpack"
+        "build:snowpack",
+        "dist-snowpack"
     ),
     new BuildTool(
         "snowpack-swc",
@@ -216,42 +225,52 @@ export const buildTools = [
         "start:snowpack-swc",
         /Server started in (.+m?s)/,
         () => rm(path.join(_dirname, '../node_modules/.cache'), {force: true, recursive: true, maxRetries: 5}),
-        "build:snowpack-swc"
+        "build:snowpack-swc",
+        "dist-snowpack-swc"
     ),
     new BuildTool(
         "rsbuild-babel",
-        8080,
+        1237,
         "start:rsbuild-babel",
         /Client compiled in (.+m?s)/,
-        () => {
-        },
-        "build:rsbuild-babel"
+        null,
+        "build:rsbuild-babel",
+        "dist-rsbuild-babel"
     ),
     new BuildTool(
         "rsbuild-swc",
         1238,
         "start:rsbuild-swc",
         /Client compiled in (.+m?s)/,
-        () => {
-        },
-        "build:rsbuild-swc"
+        null,
+        "build:rsbuild-swc",
+        "dist-rsbuild-swc"
     ),
     new BuildTool(
         "rollup",
         8083,
         "start:rollup",
         /created dist-rollup\/index.js in (.+m?s)/,
-        () => {
-        },
-        "build:rollup"
+        null,
+        "build:rollup",
+        "dist-rollup"
     ),
     new BuildTool(
         "rollup-swc",
         8084,
         "start:rollup-swc",
         /created dist-rollup-swc\/index.js in (.+m?s)/,
-        () => {
-        },
-        "build:rollup-swc"
+        null,
+        "build:rollup-swc",
+        "dist-rollup-swc"
+    ),
+    new BuildTool(
+        "wmr",
+        null,
+        null,
+        null,
+        () => { },
+        "build:wmr",
+        "dist-wmr"
     )
 ]

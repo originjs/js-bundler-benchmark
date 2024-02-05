@@ -1,9 +1,10 @@
-import { appendFileSync, readFileSync, writeFileSync } from 'fs';
+import { appendFileSync, readFileSync, writeFileSync, rmSync, statSync } from 'fs';
 import playwright from 'playwright';
 import { parseArgs } from './parseArgs.mjs';
 import { buildTools } from './buildTools.mjs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'path';
+import * as tar from "tar";
 
 const { projectName, projectIndex } = parseArgs();
 
@@ -44,6 +45,7 @@ const array = projectIndex == -1 ? buildTools : [buildTools[projectIndex]];
 async function start() {
   for (const buildTool of array) {
     try {
+   
       let totalResult = {};
       // 第一次启动：清理缓存，冷启动
       await cleanServerCache(buildTool);
@@ -78,6 +80,7 @@ async function start() {
         rootHmrTime,
         leafHmrTime,
         buildTime,
+        pkgSize
       };
       results.push(totalResult);
     } finally {
@@ -106,6 +109,10 @@ async function giveSomeRest(time = 300) {
 
 async function openBrowser(bundler) {
   const page = await (await browser.newContext()).newPage();
+  if(!bundler.script){
+    return { page, time: -1 };
+  }
+  
   await giveSomeRest();
   const loadPromise = page.waitForEvent('load', { timeout: 30000 }); // 30s
   const pageLoadStart = Date.now();
@@ -127,7 +134,18 @@ async function cleanServerCache(bundler) {
   await bundler.clean?.();
 }
 
+function cleanDistDir(bundler) {
+   rmSync(bundler.distDir, {
+    force: true,
+    recursive: true,
+    maxRetries: 5,
+  });
+}
+
 async function startServer(bundler) {
+  if(!bundler.script){
+    return -1;
+  }
   return await bundler.startServer(workspaceName);
 }
 
@@ -136,6 +154,9 @@ async function startProductionBuild(bundler) {
 }
 
 async function stopServer(bundler) {
+  if(!bundler.script){
+    return;
+  }
   return await bundler.stop();
 }
 
@@ -160,6 +181,7 @@ async function hmrTime(page, filepath) {
 
 async function build(bundler) {
   if (bundler.buildScript) {
+    await cleanDistDir(bundler);
     await cleanServerCache(bundler);
     await giveSomeRest(1000);
     const productionStart = Date.now();
@@ -167,14 +189,28 @@ async function build(bundler) {
     const productionEnd = Date.now();
     return productionEnd - productionStart;
   }
-  return 0;
+  return -1;
 }
 
 async function pack(bundler){
-  // 找到构建的目录
-  // tgz目录
-  // 获取tgz包大小
-  return -1;
+  if (!bundler.buildScript) {
+    return -1;
+  }
+  await tar.c(
+    {
+      cwd: bundler.distDir,
+      gzip: true,
+      prefix: false,
+      file: `${bundler.distDir}/dist.tgz`,
+      filter: (path, stat)=>{
+        if(path == 'dist.tgz') return false;
+        return true;
+      }
+    },
+    ["./"]
+  );
+  const distFileStat = statSync(`${bundler.distDir}/dist.tgz`);
+  return Math.round((distFileStat.size / 1024)*10)/10;
 }
 
 await start();

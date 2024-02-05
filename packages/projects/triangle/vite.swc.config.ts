@@ -14,6 +14,9 @@ export default defineConfig({
   },
   css: {
     devSourcemap: true,
-  },
-  cacheDir: 'node_modules/.vite-swc'
+  },  
+  cacheDir: 'node_modules/.vite-swc',
+  build: {
+    outDir: 'dist-vite-swc'
+  }
 });

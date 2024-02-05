@@ -80,7 +80,7 @@
     "start:snowpack": "cross-env NODE_ENV=development snowpack dev",
     "start:snowpack-swc": "cross-env NODE_ENV=development snowpack dev --config snowpack.swc.config.js",
     "start:rsbuild-swc": "rsbuild dev --config rsbuild.swc.config.ts",
-    "start:rsbuild-babel": "rsbuild dev --config rsbuild.config.babel.ts",
+    "start:rsbuild-babel": "rsbuild dev --config rsbuild.babel.config.ts",
     "start:rollup": "cross-env NODE_ENV=development rollup -c --watch",
     "start:rollup-swc": "cross-env NODE_ENV=development rollup --config rollup.config.swc.js --watch",
     "start:wmr": "cross-env NODE_ENV=development wmr",
@@ -98,7 +98,7 @@
     "build:snowpack": "cross-env NODE_ENV=development snowpack build",
     "build:snowpack-swc": "cross-env NODE_ENV=production snowpack build --config snowpack.swc.config.js",
     "build:rsbuild-swc": "rsbuild build --config rsbuild.swc.config.ts",
-    "build:rsbuild-babel": "rsbuild build --config rsbuild.config.babel.ts",
+    "build:rsbuild-babel": "rsbuild build --config rsbuild.babel.config.ts",
     "build:rollup": "cross-env NODE_ENV=production rollup -c",
     "build:rollup-swc": "cross-env NODE_ENV=production rollup --config rollup.config.swc.js",
     "build:wmr": "cross-env NODE_ENV=production wmr build"
