@@ -33,6 +33,6 @@ export default {
     },
     buildOptions: {
         out: 'dist-snowpack-swc',
-        sourcemap: true
+        sourcemap: false
     },
 };

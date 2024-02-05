@@ -91,7 +91,7 @@
     "build:webpack": "webpack build --mode production",
     "build:webpack-swc": "webpack build --config ./webpack.swc.config.js --mode production",
     "build:parcel": "cross-env NODE_ENV=production parcel build index.html --dist-dir dist-parcel --config .babel.parcelrc --no-source-maps --no-cache",
-    "build:parcel-swc": "cross-env NODE_ENV=production parcel build index.html --dist-dir dist-parcel-swc",
+    "build:parcel-swc": "cross-env NODE_ENV=production parcel build index.html --dist-dir dist-parcel-swc --no-source-maps --no-cache",
     "build:turbo": "echo 'skipped'",
     "build:farm": "cross-env IS_BUILD=1 farm build",
     "build:esbuild": "esbuild src/index.tsx --bundle --minify --target=chrome87,firefox78,safari14,edge88 --outdir=dist-esbuild",

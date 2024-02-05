@@ -14,7 +14,7 @@ export default defineConfig({
         extensions: ['.tsx', '.jsx', '.ts', '.js', '.json']
     },
     css: {
-        devSourcemap: true,
+        devSourcemap: false,
     },
     cacheDir: 'node_modules/.vite-swc'
 })

@@ -19,7 +19,7 @@ const context = await esbuild.context({
   entryPoints: [path.resolve(dirname, 'src/main.ts')],
   bundle: true,
   outfile: watch ? 'esbuild-serve/main.js' : 'dist-esbuild/main.js',
-  sourcemap: true,
+  sourcemap: false,
   define: {
     __VUE_OPTIONS_API__: 'false',
     __VUE_PROD_DEVTOOLS__: 'false'

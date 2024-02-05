@@ -18,6 +18,6 @@ export default {
   },
   buildOptions: {
     out:'dist-snowpack',
-    sourcemap: true
+    sourcemap: false
   },
 };
