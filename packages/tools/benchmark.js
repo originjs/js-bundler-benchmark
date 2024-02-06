@@ -15,8 +15,9 @@ import { getProjectInfo, projectsDirname, runtimeInfo } from "./projectInfo.js";
 const { projectName, projectIndex } = parseArgs();
 
 const workspaceName = projectName || "triangle-react";
-const projectInfo = getProjectInfo(workspaceName);
+// set currentDir for build tools
 runtimeInfo.currentDir = resolve(projectsDirname, workspaceName);
+const projectInfo = getProjectInfo(workspaceName);
 const rootFilePath = resolve(runtimeInfo.currentDir, projectInfo.rootFilePath);
 const leafFilePath = resolve(runtimeInfo.currentDir, projectInfo.leafFilePath);
 
