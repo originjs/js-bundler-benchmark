@@ -27,42 +27,48 @@ const originalLeafFileContent = readFileSync(leafFilePath, "utf-8");
 const results = [];
 const browser = await playwright.chromium.launch();
 
-const array = projectIndex === -1 ? buildTools : [buildTools[projectIndex]];
+const buildTasks =
+	projectIndex === -1 ? buildTools : [buildTools[projectIndex]];
 
 async function start() {
-	for (const buildTool of array) {
+	for (const task of buildTasks) {
 		try {
 			let totalResult = {};
 			// first startup: clear cache, cold start
-			await cleanServerCache(buildTool);
-			const serverStartTime4Cold = await startServer(buildTool);
-			const { time: loadPageTime4Cold } = await openBrowser(buildTool);
+			await cleanServerCache(task);
+			const serverStartTime4Cold = await startServer(task);
+			let { time: loadPageTime4Cold, page } = await openBrowser(task);
 
-			await closePage();
-			await stopServer(buildTool);
-			await giveSomeRest();
-
-			// second startup: no cache cleaning, hot start
-			const serverStartTime4Hot = await startServer(buildTool);
-			const { time: loadPageTime4Hot, page } = await openBrowser(buildTool);
+			let serverStartTime4Hot;
+			let loadPageTime4Hot;
+			// some build tool don`t support hot cache
+			if (!task.skipHotStart) {
+				await closePage();
+				await stopServer(task);
+				await giveSomeRest();
+				// second startup: no cache cleaning, hot start
+				serverStartTime4Hot = await startServer(task);
+				const hotBrowser = await openBrowser(task);
+				page = hotBrowser.page;
+				loadPageTime4Hot = hotBrowser.time;
+			}
 
 			const rootHmrTime = await hmrTime(page, rootFilePath);
 			await giveSomeRest(1000);
 			const leafHmrTime = await hmrTime(page, leafFilePath);
 
 			await closePage();
-			await stopServer(buildTool);
+			await stopServer(task);
 
-			const buildTime = await build(buildTool);
-
-			const pkgSize = await pack(buildTool);
+			const buildTime = await build(task);
+			const pkgSize = await pack(task);
 
 			totalResult = {
-				bundler: buildTool.name,
+				bundler: task.name,
 				serverStartTime4Cold,
 				loadPageTime4Cold,
-				serverStartTime4Hot,
-				loadPageTime4Hot,
+				serverStartTime4Hot: serverStartTime4Hot ?? "skipped",
+				loadPageTime4Hot: loadPageTime4Hot ?? "skipped",
 				rootHmrTime,
 				leafHmrTime,
 				buildTime,
@@ -101,7 +107,6 @@ async function openBrowser(bundler) {
 	}
 
 	await giveSomeRest();
-	// 30s
 	const loadPromise = page.waitForEvent("load", { timeout: 30000 });
 	const pageLoadStart = Date.now();
 	page.goto(`http://localhost:${bundler.port}`);

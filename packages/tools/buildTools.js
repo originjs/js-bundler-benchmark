@@ -14,6 +14,7 @@ class BuildTool {
 		buildScript,
 		distDir,
 		skipHmr = false,
+		skipHotStart = false,
 	) {
 		this.name = name;
 		this.port = port;
@@ -23,6 +24,7 @@ class BuildTool {
 		this.buildScript = buildScript;
 		this.distDir = distDir;
 		this.skipHmr = skipHmr;
+		this.skipHotStart = skipHotStart;
 	}
 
 	async startServer(workspaceName) {
@@ -117,6 +119,8 @@ export const buildTools = [
 		null,
 		"build:rspack",
 		"dist-rspack",
+		false,
+		true,
 	),
 	new BuildTool(
 		"Rspack(swc)",
@@ -126,6 +130,8 @@ export const buildTools = [
 		null,
 		"build:rspack-swc",
 		"dist-rspack-swc",
+		false,
+		true,
 	),
 	new BuildTool(
 		"esbuild",
@@ -183,7 +189,7 @@ export const buildTools = [
 		"start:vite",
 		/ready in (.+ m?s)/,
 		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.vite"), {
+			rm(join(runtimeInfo.currentDir, "node_modules/.cache-vite"), {
 				force: true,
 				recursive: true,
 				maxRetries: 5,
@@ -197,7 +203,7 @@ export const buildTools = [
 		"start:vite-swc",
 		/ready in (.+ m?s)/,
 		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.vite-swc"), {
+			rm(join(runtimeInfo.currentDir, "node_modules/.cache-vite-swc"), {
 				force: true,
 				recursive: true,
 				maxRetries: 5,
