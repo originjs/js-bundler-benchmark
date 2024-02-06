@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "tools for benchmark",
   "private": true,
+  "type": "module",
   "dependencies": {
     "playwright": "^1.41.1",
     "tar": "^6.2.0",
