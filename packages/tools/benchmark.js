@@ -81,7 +81,8 @@ function printResult() {
 	const result = Object.fromEntries(
 		Object.entries(totalResult).map(([k, v]) => [
 			k,
-			v ? (v / count).toFixed(1) : v, //求平均
+			// average
+			v ? (v / count).toFixed(1) : v,
 		]),
 	);
 
@@ -99,7 +100,8 @@ async function openBrowser(bundler) {
 	}
 
 	await giveSomeRest();
-	const loadPromise = page.waitForEvent("load", { timeout: 30000 }); // 30s
+	// 30s
+	const loadPromise = page.waitForEvent("load", { timeout: 30000 });
 	const pageLoadStart = Date.now();
 	page.goto(`http://localhost:${bundler.port}`);
 	await loadPromise;
@@ -166,7 +168,7 @@ async function hmrTime(page, filepath) {
 
 async function build(bundler) {
 	if (bundler.buildScript) {
-		await cleanDistDir(bundler);
+		cleanDistDir(bundler);
 		await cleanServerCache(bundler);
 		await giveSomeRest(1000);
 		const productionStart = Date.now();
@@ -188,7 +190,7 @@ async function pack(bundler) {
 			gzip: true,
 			prefix: false,
 			file: `${distDir}/dist.tgz`,
-			filter: (path, stat) => {
+			filter: (path, _) => {
 				return path !== "dist.tgz";
 			},
 		},
