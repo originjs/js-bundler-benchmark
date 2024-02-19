@@ -110,6 +110,13 @@ class BuildTool {
 	}
 }
 
+async function forceRm(path) {
+	return rm(path, {
+		force: true,
+		recursive: true,
+		maxRetries: 5,
+	});
+}
 export const buildTools = [
 	new BuildTool(
 		"Rspack(babel)",
@@ -156,12 +163,7 @@ export const buildTools = [
 		3000,
 		"start:turbopack",
 		/Ready in (.+m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, ".next"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		() => forceRm(join(runtimeInfo.currentDir, ".next")),
 		"",
 		"",
 	),
