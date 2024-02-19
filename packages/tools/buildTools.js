@@ -110,8 +110,8 @@ class BuildTool {
 	}
 }
 
-async function forceRm(path) {
-	return rm(path, {
+async function forceRm(dir) {
+	return rm(join(runtimeInfo.currentDir, dir), {
 		force: true,
 		recursive: true,
 		maxRetries: 5,
@@ -123,7 +123,9 @@ export const buildTools = [
 		8079,
 		"start:rspack",
 		/compiled in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-rspack");
+		},
 		"build:rspack",
 		"dist-rspack",
 		false,
@@ -134,7 +136,9 @@ export const buildTools = [
 		8080,
 		"start:rspack-swc",
 		/compiled in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-rspack-swc");
+		},
 		"build:rspack-swc",
 		"dist-rspack-swc",
 		false,
@@ -149,6 +153,7 @@ export const buildTools = [
 			const serveDir = join(runtimeInfo.currentDir, "esbuild-serve");
 			try {
 				await mkdir(serveDir);
+				await forceRm("dist-esbuild");
 			} catch (err) {
 				if (err.code !== "EEXIST") {
 					throw err;
@@ -163,7 +168,9 @@ export const buildTools = [
 		3000,
 		"start:turbopack",
 		/Ready in (.+m?s)/,
-		() => forceRm(join(runtimeInfo.currentDir, ".next")),
+		() => {
+			return Promise.all([forceRm(".next"), forceRm("dist-turbopack")]);
+		},
 		"",
 		"",
 	),
@@ -172,7 +179,9 @@ export const buildTools = [
 		8081,
 		"start:webpack",
 		/compiled successfully in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-webpack");
+		},
 		"build:webpack",
 		"dist-webpack",
 	),
@@ -181,7 +190,9 @@ export const buildTools = [
 		8082,
 		"start:webpack-swc",
 		/compiled successfully in (.+ m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-webpack-swc");
+		},
 		"build:webpack-swc",
 		"dist-webpack-swc",
 	),
@@ -190,12 +201,12 @@ export const buildTools = [
 		5173,
 		"start:vite",
 		/ready in (.+ m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.cache-vite"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		async () => {
+			return Promise.all([
+				forceRm("node_modules/.cache-vite"),
+				forceRm("dist-vite"),
+			]);
+		},
 		"build:vite",
 		"dist-vite",
 	),
@@ -204,12 +215,12 @@ export const buildTools = [
 		5174,
 		"start:vite-swc",
 		/ready in (.+ m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.cache-vite-swc"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		async () => {
+			Promise.all([
+				forceRm("node_modules/.cache-vite-swc"),
+				forceRm("dist-vite-swc"),
+			]);
+		},
 		"build:vite-swc",
 		"dist-vite-swc",
 	),
@@ -218,12 +229,9 @@ export const buildTools = [
 		9000,
 		"start:farm",
 		/Ready in (.+m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.farm"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		async () => {
+			return Promise.all([forceRm("node_modules/.farm"), forceRm("dist-farm")]);
+		},
 		"build:farm",
 		"dist-farm",
 		true,
@@ -233,19 +241,9 @@ export const buildTools = [
 		1234,
 		"start:parcel",
 		/Server running/,
-		() =>
-			Promise.all([
-				rm(join(runtimeInfo.currentDir, ".parcel-cache"), {
-					force: true,
-					recursive: true,
-					maxRetries: 5,
-				}),
-				rm(join(runtimeInfo.currentDir, "dist-parcel"), {
-					force: true,
-					recursive: true,
-					maxRetries: 5,
-				}),
-			]),
+		async () => {
+			return Promise.all([forceRm(".parcel-cache"), forceRm("dist-parcel")]);
+		},
 		"build:parcel",
 		"dist-parcel",
 	),
@@ -254,19 +252,12 @@ export const buildTools = [
 		1234,
 		"start:parcel-swc",
 		/Server running/,
-		() =>
-			Promise.all([
-				rm(join(runtimeInfo.currentDir, ".parcel-cache"), {
-					force: true,
-					recursive: true,
-					maxRetries: 5,
-				}),
-				rm(join(runtimeInfo.currentDir, "dist-parcel"), {
-					force: true,
-					recursive: true,
-					maxRetries: 5,
-				}),
-			]),
+		async () => {
+			return Promise.all([
+				forceRm(".parcel-cache"),
+				forceRm("dist-parcel-swc"),
+			]);
+		},
 		"build:parcel-swc",
 		"dist-parcel-swc",
 	),
@@ -275,12 +266,12 @@ export const buildTools = [
 		1236,
 		"start:snowpack",
 		/Server started in (.+m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.cache"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		async () => {
+			return Promise.all([
+				forceRm("node_modules/.cache"),
+				forceRm("dist-snowpack"),
+			]);
+		},
 		"build:snowpack",
 		"dist-snowpack",
 	),
@@ -289,12 +280,12 @@ export const buildTools = [
 		1237,
 		"start:snowpack-swc",
 		/Server started in (.+m?s)/,
-		() =>
-			rm(join(runtimeInfo.currentDir, "node_modules/.cache"), {
-				force: true,
-				recursive: true,
-				maxRetries: 5,
-			}),
+		async () => {
+			return Promise.all([
+				forceRm("node_modules/.cache"),
+				forceRm("dist-snowpack-swc"),
+			]);
+		},
 		"build:snowpack-swc",
 		"dist-snowpack-swc",
 	),
@@ -303,7 +294,9 @@ export const buildTools = [
 		1237,
 		"start:rsbuild-babel",
 		/Client compiled in (.+m?s)/,
-		null,
+		async () => {
+			forceRm("dist-rsbuild-babel");
+		},
 		"build:rsbuild-babel",
 		"dist-rsbuild-babel",
 	),
@@ -312,7 +305,9 @@ export const buildTools = [
 		1238,
 		"start:rsbuild-swc",
 		/Client compiled in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-rsbuild-swc");
+		},
 		"build:rsbuild-swc",
 		"dist-rsbuild-swc",
 	),
@@ -321,7 +316,9 @@ export const buildTools = [
 		8083,
 		"start:rollup",
 		/created dist-rollup\/index.js in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-rollup");
+		},
 		"build:rollup",
 		"dist-rollup",
 	),
@@ -330,7 +327,9 @@ export const buildTools = [
 		8084,
 		"start:rollup-swc",
 		/created dist-rollup-swc\/index.js in (.+m?s)/,
-		null,
+		async () => {
+			return forceRm("dist-rollup-swc");
+		},
 		"build:rollup-swc",
 		"dist-rollup-swc",
 	),
