@@ -8,7 +8,6 @@ import {
 import { join, resolve } from "path";
 import playwright from "playwright";
 import * as tar from "tar";
-import { buildTools } from "./buildTools.js";
 import { parseArgs } from "./parseArgs.js";
 import { getProjectInfo, projectsDirname, runtimeInfo } from "./projectInfo.js";
 
@@ -18,6 +17,9 @@ const workspaceName = projectName || "triangle-react";
 // set currentDir for build tools
 runtimeInfo.currentDir = resolve(projectsDirname, workspaceName);
 const projectInfo = getProjectInfo(workspaceName);
+if (!projectInfo) {
+	throw new Error(`no project named ${projectName}`);
+}
 const rootFilePath = resolve(runtimeInfo.currentDir, projectInfo.rootFilePath);
 const leafFilePath = resolve(runtimeInfo.currentDir, projectInfo.leafFilePath);
 
@@ -28,7 +30,9 @@ const results = [];
 const browser = await playwright.chromium.launch();
 
 const buildTasks =
-	projectIndex === -1 ? buildTools : [buildTools[projectIndex]];
+	projectIndex === -1
+		? projectInfo.buildInfo
+		: [projectInfo.buildInfo[projectIndex]];
 
 async function start() {
 	for (const task of buildTasks) {

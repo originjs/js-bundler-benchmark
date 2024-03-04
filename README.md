@@ -4,7 +4,11 @@
 ```bash
 node packages/tools/benchmark.mjs
 ```
-The `-p` parameter switches the evaluation project.
+
+The `-p` parameter switches the evaluation project
+``` bash
+pnpm benchmark -p=triangle-vue
+```
 
 ## Results of the last assessment(2024-02-05)
 
