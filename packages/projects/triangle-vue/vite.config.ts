@@ -8,4 +8,7 @@ export default defineConfig({
   build: {
     outDir: "dist-vite",
   },
+  server:{
+    port:5010
+  }
 });

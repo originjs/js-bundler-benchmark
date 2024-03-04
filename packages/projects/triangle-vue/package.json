@@ -13,7 +13,7 @@
     "start:rspack-swc": "echo 'skipped' (swc does not currently support vue files)",
     "start:esbuild": "node esbuild-server.js --watch",
     "start:turbopack": "echo 'skipped' (turbopack dont currently support vue)",
-    "start:parcel": "parcel index.html --dist-dir dist-parcel",
+    "start:parcel": "parcel index.html --port 5070 --dist-dir dist-parcel",
     "start:parcel-swc": "echo 'skipped' (turbopack dont currently support vue)",
     "start:snowpack": "echo 'skipped because vue3 setup syntax is not supported'",
     "start:snowpack-swc": "echo 'skipped' (turbopack dont currently support vue)",

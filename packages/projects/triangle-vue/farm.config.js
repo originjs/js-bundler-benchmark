@@ -24,6 +24,7 @@ const config = {
 		sourcemap: !isProdMode,
 	},
 	server: {
+		port: 5000,
 		strictPort: true,
 		hmr: true,
 	},

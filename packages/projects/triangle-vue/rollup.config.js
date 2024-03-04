@@ -16,7 +16,7 @@ if (!isProdMode) {
 		server({
 			open: true,
 			contentBase: "dist-rollup",
-			port: 8083,
+			port: 5100,
 		}),
 	);
 	//     copy index.html to dist
