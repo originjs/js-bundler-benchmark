@@ -120,7 +120,7 @@ async function forceRm(dir) {
 export const buildTools = [
 	new BuildTool(
 		"Rspack(babel)",
-		8079,
+		5030,
 		"start:rspack",
 		/compiled in (.+m?s)/,
 		async () => {
@@ -133,7 +133,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Rspack(swc)",
-		8080,
+		5031,
 		"start:rspack-swc",
 		/compiled in (.+m?s)/,
 		async () => {
@@ -146,7 +146,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"esbuild",
-		1235,
+		5040,
 		"start:esbuild",
 		/esbuild serve cost (.+m?s)/,
 		async () => {
@@ -165,7 +165,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Turbopack",
-		3000,
+		5050,
 		"start:turbopack",
 		/Ready in (.+m?s)/,
 		() => {
@@ -176,7 +176,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Webpack (babel)",
-		8081,
+		5020,
 		"start:webpack",
 		/compiled successfully in (.+m?s)/,
 		async () => {
@@ -187,7 +187,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Webpack (swc)",
-		8082,
+		5021,
 		"start:webpack-swc",
 		/compiled successfully in (.+ m?s)/,
 		async () => {
@@ -198,7 +198,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Vite",
-		5173,
+		5010,
 		"start:vite",
 		/ready in (.+ m?s)/,
 		async () => {
@@ -212,7 +212,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Vite (swc)",
-		5174,
+		5011,
 		"start:vite-swc",
 		/ready in (.+ m?s)/,
 		async () => {
@@ -226,7 +226,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Farm",
-		9000,
+		5000,
 		"start:farm",
 		/Ready in (.+m?s)/,
 		async () => {
@@ -238,7 +238,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Parcel",
-		1234,
+		5070,
 		"start:parcel",
 		/Server running/,
 		async () => {
@@ -249,7 +249,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"Parcel-swc",
-		1234,
+		5071,
 		"start:parcel-swc",
 		/Server running/,
 		async () => {
@@ -263,7 +263,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"snowpack",
-		1236,
+		5080,
 		"start:snowpack",
 		/Server started in (.+m?s)/,
 		async () => {
@@ -277,7 +277,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"snowpack-swc",
-		1237,
+		5081,
 		"start:snowpack-swc",
 		/Server started in (.+m?s)/,
 		async () => {
@@ -291,7 +291,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"rsbuild-babel",
-		1237,
+		5090,
 		"start:rsbuild-babel",
 		/Client compiled in (.+m?s)/,
 		async () => {
@@ -302,7 +302,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"rsbuild-swc",
-		1238,
+		5091,
 		"start:rsbuild-swc",
 		/Client compiled in (.+m?s)/,
 		async () => {
@@ -313,7 +313,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"rollup",
-		8083,
+		5100,
 		"start:rollup",
 		/created dist-rollup\/index.js in (.+m?s)/,
 		async () => {
@@ -324,7 +324,7 @@ export const buildTools = [
 	),
 	new BuildTool(
 		"rollup-swc",
-		8084,
+		5101,
 		"start:rollup-swc",
 		/created dist-rollup-swc\/index.js in (.+m?s)/,
 		async () => {
@@ -333,5 +333,15 @@ export const buildTools = [
 		"build:rollup-swc",
 		"dist-rollup-swc",
 	),
-	new BuildTool("wmr", null, null, null, () => {}, "build:wmr", "dist-wmr"),
+	new BuildTool(
+		"wmr",
+		5110,
+		"start:wmr",
+		/WMR dev server running at:/,
+		async () => {
+			return forceRm("dist-wmr");
+		},
+		"build:wmr",
+		"dist-wmr",
+	),
 ];

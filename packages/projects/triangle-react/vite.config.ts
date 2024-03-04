@@ -6,7 +6,7 @@ export default defineConfig({
         react()
     ],
     server: {
-        port: 5173,
+        port: 5010,
         strictPort: true,
     }, resolve: {
         extensions: ['.tsx', '.jsx', '.ts', '.js', '.json']

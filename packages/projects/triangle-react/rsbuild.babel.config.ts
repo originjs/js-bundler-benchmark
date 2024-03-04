@@ -3,7 +3,7 @@ import {pluginBabel} from '@rsbuild/plugin-babel'
 
 export default defineConfig({
     server: {
-        port: 1237
+        port:5090
     },
     output: {
         distPath: {

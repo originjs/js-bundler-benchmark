@@ -24,7 +24,8 @@ const config: UserConfig = {
   },
   server: {
     strictPort: true,
-    hmr: true
+    hmr: true,
+    port:5000
   },
   plugins: ['@farmfe/plugin-react'],
 };
