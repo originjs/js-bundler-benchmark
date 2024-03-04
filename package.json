@@ -7,7 +7,7 @@
     "benchmark:react-demo": "node packages/tools/benchmark.js -p=react-demo",
     "benchmark:dev": "node packages/tools/benchmark.mjs benchmark.js -t=dev",
     "benchmark:build": "node packages/tools/benchmark.mjs benchmark.js -t=build",
-    "prepare": "husky init"
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=18",
