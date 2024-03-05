@@ -33,6 +33,17 @@ pnpm benchmark -p=triangle-vue
 |   16    |   rollup-swc    |        30300         |        237        |        28900        |       233        |     /       |     /       |   26579   |  80.9   |
 |   17    |       wmr       |          /           |        /          |         /           |        /         |     /       |     /       |   13064   |  108.7  |
 
+## Vue project(2024-03-05)
+| num |      bundler      |  Cold start time(ms) | Page load time - cold start(ms) | Hot start time(ms) | Page load time - hot start(ms)  | HMR - root	(ms) | HMR - leaf(ms) | Build time(ms) | dist package size(KB) |
+|-|-|-|-|-|-|-|-|-|-|
+|    0    |  Rspack(babel)  |         833          |        348        |      'skipped'      |    'skipped'     |     131     |     165     |   1445    |  54.6   |
+|    1    |     esbuild     |          56          |        184        |         55          |       119        |     -1      |     -1      |    824    |  252.8  |
+|    2    | Webpack (babel) |         1819         |        469        |        1785         |       438        |     413     |     399     |   4317    |  44.8   |
+|    3    |      Vite       |         183          |        934        |         147         |       1268       |     132     |     130     |   1486    |  44.8   |
+|    4    |      Farm       |         489          |        130        |         168         |       130        |     46      |     49      |   1314    |  141.7  |
+|    5    |     Parcel      |         3540         |        180        |         57          |       168        |     278     |     288     |   4674    |  463.3  |
+|    6    |  rsbuild-babel  |         1000         |        283        |         990         |       279        |     158     |     189     |   1619    |  92.5   |
+|    7    |     rollup      |         2200         |        96         |        2100         |       107        |     -1      |     -1      |   2663    |   63    |
 ## Reference
 - https://github.com/sapphi-red/performance-compare
 - https://github.com/farm-fe/performance-compare
