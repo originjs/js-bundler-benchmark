@@ -1,3 +1,4 @@
+import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +11,9 @@ const triangleReact = {
 	dirname: "triangle-react",
 	rootFilePath: "src/comps/triangle.jsx",
 	leafFilePath: "src/comps/triangle_1_1_2_1_2_2_1.jsx",
+	changeFileFn: (filePath, text) => {
+		appendFileSync(filePath, `console.log('${text}');`);
+	},
 	buildInfo: [
 		new BuildTool(
 			"Rspack(babel)",
@@ -136,7 +140,7 @@ const triangleReact = {
 			"Parcel",
 			5070,
 			"start:parcel",
-			/Server running/,
+			/Built in (.+m?s)/,
 			async () => {
 				return Promise.all([forceRm(".parcel-cache"), forceRm("dist-parcel")]);
 			},
@@ -246,6 +250,14 @@ const triangleVue = {
 	dirname: "triangle-vue",
 	rootFilePath: "src/components/triangle.vue",
 	leafFilePath: "src/components/triangle_1_1_2_1_2_2_1.vue",
+	changeFileFn: (filePath, text) => {
+		const content = readFileSync(filePath, "utf8");
+		const newContent = content.replace(
+			"</script>",
+			`\n console.log('${text}') \n</script>`,
+		);
+		writeFileSync(filePath, newContent, "utf8");
+	},
 	buildInfo: [
 		new BuildTool(
 			"Rspack(babel)",
@@ -323,7 +335,7 @@ const triangleVue = {
 			"Parcel",
 			5070,
 			"start:parcel",
-			/Server running/,
+			/Built in (.+m?s)/,
 			async () => {
 				return Promise.all([forceRm(".parcel-cache"), forceRm("dist-parcel")]);
 			},

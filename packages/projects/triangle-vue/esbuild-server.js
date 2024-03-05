@@ -63,7 +63,8 @@ if (watch) {
 		req.pipe(proxyReq, { end: true });
 	});
 	server.listen(5040, () => {
-		console.log(`esbuild serve cost ${end - start}ms: http://localhost:5040/`);
+		console.log(`esbuild serve cost ${end - start}ms`);
+		console.log("http://localhost:5040/");
 	});
 } else {
 	await context.rebuild();

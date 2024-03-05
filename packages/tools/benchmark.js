@@ -159,6 +159,7 @@ async function stopServer(bundler) {
 
 async function hmrTime(page, filepath) {
 	const testCodeText = "Test hmr reaction time";
+	projectInfo.changeFileFn(filepath, testCodeText);
 	const rootConsolePromise = page.waitForEvent("console", {
 		timeout: 10000,
 		predicate: (e) => {
@@ -166,7 +167,6 @@ async function hmrTime(page, filepath) {
 			return logText.includes(testCodeText);
 		},
 	});
-	appendFileSync(filepath, `console.log('${testCodeText}');`);
 	const hmrRootStart = Date.now();
 	try {
 		await rootConsolePromise;
