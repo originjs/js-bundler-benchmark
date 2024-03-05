@@ -11,6 +11,7 @@ const config = {
 		input: {
 			index: "./index.farm.html",
 		},
+		persistentCache: true,
 		resolve: {
 			symlinks: true,
 			mainFields: ["module", "main", "customMain"],

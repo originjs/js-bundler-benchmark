@@ -7,6 +7,7 @@ const config: UserConfig = {
     input: {
       index: './index.html',
     },
+    persistentCache:true,
     resolve: {
       symlinks: true,
       mainFields: ['module', 'main', 'customMain'],
