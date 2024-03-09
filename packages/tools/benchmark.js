@@ -10,6 +10,7 @@ import playwright from "playwright";
 import * as tar from "tar";
 import { parseArgs } from "./parseArgs.js";
 import { getProjectInfo, projectsDirname, runtimeInfo } from "./projectInfo.js";
+import { report } from "./report.js";
 
 const { projectName, projectIndex } = parseArgs();
 
@@ -68,6 +69,7 @@ async function start() {
 			const pkgSize = await pack(task);
 
 			totalResult = {
+				projectName: task.projectName,
 				bundler: task.name,
 				serverStartTime4Cold,
 				loadPageTime4Cold,
@@ -84,7 +86,7 @@ async function start() {
 			writeFileSync(leafFilePath, originalLeafFileContent);
 		}
 	}
-
+	await report(results);
 	console.table(results);
 }
 
