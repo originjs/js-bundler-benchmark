@@ -1,0 +1,35 @@
+name: Run Benchmarks
+
+on:
+  workflow_dispatch:
+jobs:
+  benchmark:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on:  ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install
+        run: |
+          # Install dependencies
+          npm install pnpm -g
+          pnpm install --no-frozen-lockfile
+
+      - name: Run benchmark
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+        run: |
+          pnpm run benchmark
+
+      - name: Run benchmark Vue
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+        run: |
+          pnpm run benchmark -p=triangle-vue
