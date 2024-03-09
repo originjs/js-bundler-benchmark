@@ -16,6 +16,7 @@ const triangleReact = {
 	},
 	buildInfo: [
 		new BuildTool(
+			"Rspack",
 			"Rspack(babel)",
 			5030,
 			"start:rspack",
@@ -29,6 +30,7 @@ const triangleReact = {
 			true,
 		),
 		new BuildTool(
+			"Rspack",
 			"Rspack(swc)",
 			5031,
 			"start:rspack-swc",
@@ -42,6 +44,7 @@ const triangleReact = {
 			true,
 		),
 		new BuildTool(
+			"esbuild",
 			"esbuild",
 			5040,
 			"start:esbuild",
@@ -61,6 +64,7 @@ const triangleReact = {
 			"dist-esbuild",
 		),
 		new BuildTool(
+			"turbo",
 			"Turbopack",
 			5050,
 			"start:turbopack",
@@ -72,6 +76,7 @@ const triangleReact = {
 			"",
 		),
 		new BuildTool(
+			"Webpack",
 			"Webpack (babel)",
 			5020,
 			"start:webpack",
@@ -83,6 +88,7 @@ const triangleReact = {
 			"dist-webpack",
 		),
 		new BuildTool(
+			"Webpack",
 			"Webpack (swc)",
 			5021,
 			"start:webpack-swc",
@@ -94,6 +100,7 @@ const triangleReact = {
 			"dist-webpack-swc",
 		),
 		new BuildTool(
+			"Vite",
 			"Vite",
 			5010,
 			"start:vite",
@@ -108,6 +115,7 @@ const triangleReact = {
 			"dist-vite",
 		),
 		new BuildTool(
+			"Vite",
 			"Vite (swc)",
 			5011,
 			"start:vite-swc",
@@ -122,6 +130,7 @@ const triangleReact = {
 			"dist-vite-swc",
 		),
 		new BuildTool(
+			"Farm",
 			"Farm",
 			5000,
 			"start:farm",
@@ -138,6 +147,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Parcel",
+			"Parcel",
 			5070,
 			"start:parcel",
 			/Built in (.+m?s)/,
@@ -148,6 +158,7 @@ const triangleReact = {
 			"dist-parcel",
 		),
 		new BuildTool(
+			"Parcel",
 			"Parcel-swc",
 			5071,
 			"start:parcel-swc",
@@ -163,6 +174,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"snowpack",
+			"snowpack",
 			5080,
 			"start:snowpack",
 			/Server started in (.+m?s)/,
@@ -176,6 +188,7 @@ const triangleReact = {
 			"dist-snowpack",
 		),
 		new BuildTool(
+			"snowpack",
 			"snowpack-swc",
 			5081,
 			"start:snowpack-swc",
@@ -190,6 +203,7 @@ const triangleReact = {
 			"dist-snowpack-swc",
 		),
 		new BuildTool(
+			"rsbuild",
 			"rsbuild-babel",
 			5090,
 			"start:rsbuild-babel",
@@ -201,6 +215,7 @@ const triangleReact = {
 			"dist-rsbuild-babel",
 		),
 		new BuildTool(
+			"rsbuild",
 			"rsbuild-swc",
 			5091,
 			"start:rsbuild-swc",
@@ -213,6 +228,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"rollup",
+			"rollup",
 			5100,
 			"start:rollup",
 			/created dist-rollup\/index.js in (.+m?s)/,
@@ -223,6 +239,7 @@ const triangleReact = {
 			"dist-rollup",
 		),
 		new BuildTool(
+			"rollup",
 			"rollup-swc",
 			5101,
 			"start:rollup-swc",
@@ -234,6 +251,7 @@ const triangleReact = {
 			"dist-rollup-swc",
 		),
 		new BuildTool(
+			"wmr",
 			"wmr",
 			5110,
 			"start:wmr",
@@ -274,6 +292,7 @@ const triangleVue = {
 		),
 		new BuildTool(
 			"esbuild",
+			"esbuild",
 			5040,
 			"start:esbuild",
 			/esbuild serve cost (.+m?s)/,
@@ -292,6 +311,7 @@ const triangleVue = {
 			"dist-esbuild",
 		),
 		new BuildTool(
+			"Webpack",
 			"Webpack (babel)",
 			5020,
 			"start:webpack",
@@ -303,6 +323,7 @@ const triangleVue = {
 			"dist-webpack",
 		),
 		new BuildTool(
+			"Vite",
 			"Vite",
 			5010,
 			"start:vite",
@@ -317,6 +338,7 @@ const triangleVue = {
 			"dist-vite",
 		),
 		new BuildTool(
+			"Farm",
 			"Farm",
 			5000,
 			"start:farm",
@@ -333,6 +355,7 @@ const triangleVue = {
 		),
 		new BuildTool(
 			"Parcel",
+			"Parcel",
 			5070,
 			"start:parcel",
 			/Built in (.+m?s)/,
@@ -343,6 +366,7 @@ const triangleVue = {
 			"dist-parcel",
 		),
 		new BuildTool(
+			"rsbuild",
 			"rsbuild-babel",
 			5090,
 			"start:rsbuild",
@@ -354,6 +378,7 @@ const triangleVue = {
 			"dist-rsbuild",
 		),
 		new BuildTool(
+			"rollup",
 			"rollup",
 			5100,
 			"start:rollup",

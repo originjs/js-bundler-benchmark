@@ -3,6 +3,7 @@ import kill from "tree-kill";
 
 export class BuildTool {
 	constructor(
+		projectName,
 		name,
 		port,
 		script,
@@ -13,6 +14,7 @@ export class BuildTool {
 		skipHmr = false,
 		skipHotStart = false,
 	) {
+		this.projectName = projectName;
 		this.name = name;
 		this.port = port;
 		this.script = script;
