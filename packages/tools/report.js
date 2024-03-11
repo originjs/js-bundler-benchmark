@@ -31,9 +31,9 @@ function dealdata(jsonData, patchId) {
 				benchmark: `${result.bundler}_${prop}`,
 				techStack,
 				rawValue:
-					values[props.indexOf(prop)] === "skipped"
+					values[filteredProps.indexOf(prop)] === "skipped"
 						? -1
-						: values[props.indexOf(prop)],
+						: values[filteredProps.indexOf(prop)],
 				content: result,
 				patchId,
 				platform: _platform(),
@@ -46,6 +46,7 @@ function dealdata(jsonData, patchId) {
 async function postData(res) {
 	for (const data of res) {
 		try {
+			console.log(data);
 			const response = await axios.post(`${url}/sync/benchmark`, data);
 			console.log(response.data);
 		} catch (error) {
