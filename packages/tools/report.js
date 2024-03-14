@@ -29,6 +29,8 @@ function dealdata(jsonData, patchId) {
 			res.push({
 				projectName: result.projectName,
 				benchmark: `${result.bundler}_${prop}`,
+				displayName: result.bundler,
+				indexName: prop,
 				techStack,
 				rawValue:
 					values[filteredProps.indexOf(prop)] === "skipped"

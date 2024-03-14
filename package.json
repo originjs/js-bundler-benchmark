@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "benchmark": "node packages/tools/benchmark.js",
-    "benchmark:react-demo": "node packages/tools/benchmark.js -p=react-demo",
+    "benchmark:react": "node packages/tools/benchmark.js -p=triangle-react",
+    "benchmark:vue": "node packages/tools/benchmark.js -p=triangle-vue",
     "benchmark:dev": "node packages/tools/benchmark.mjs benchmark.js -t=dev",
     "benchmark:build": "node packages/tools/benchmark.mjs benchmark.js -t=build",
     "prepare": "husky"
