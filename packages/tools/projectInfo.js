@@ -278,6 +278,7 @@ const triangleVue = {
 	},
 	buildInfo: [
 		new BuildTool(
+			"Rspack",
 			"Rspack(babel)",
 			5030,
 			"start:rspack",
