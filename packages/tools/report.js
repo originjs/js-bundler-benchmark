@@ -1,7 +1,7 @@
 import { platform as _platform } from "os";
 import axios from "axios";
 
-const techStack = "buildTools";
+const techStack = "构建工具";
 const url = process.env.REPORT_URL;
 
 export async function report(jsonData) {
