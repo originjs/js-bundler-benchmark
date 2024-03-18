@@ -4,17 +4,17 @@ import axios from "axios";
 const techStack = "构建工具";
 const url = process.env.REPORT_URL;
 
-export async function report(jsonData) {
+export async function report(jsonData, projectInfo) {
 	const { data: patchId } = await axios.post(
 		`${url}/sync/benchmark/getPatchId`,
 		{},
 	);
 	console.log("patchId: ", patchId);
-	const res = dealdata(jsonData, patchId.toString());
+	const res = dealdata(jsonData, patchId.toString(), projectInfo);
 	await postData(res);
 }
 
-function dealdata(jsonData, patchId) {
+function dealdata(jsonData, patchId, projectInfo) {
 	const res = [];
 	for (const result of jsonData) {
 		const props = Object.keys(result);
@@ -37,7 +37,7 @@ function dealdata(jsonData, patchId) {
 						: values[filteredProps.indexOf(prop)],
 				content: result,
 				patchId,
-				platform: _platform(),
+				platform: JSON.stringify([_platform(), projectInfo.framework]),
 			});
 		}
 	}

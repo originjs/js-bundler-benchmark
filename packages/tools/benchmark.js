@@ -86,7 +86,7 @@ async function start() {
 			writeFileSync(leafFilePath, originalLeafFileContent);
 		}
 	}
-	await report(results);
+	await report(results, projectInfo);
 	console.table(results);
 }
 

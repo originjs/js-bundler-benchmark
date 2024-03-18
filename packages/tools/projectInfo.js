@@ -9,6 +9,7 @@ import { forceRm } from "./fileUtil.js";
 const map = new Map();
 const triangleReact = {
 	dirname: "triangle-react",
+	framework: "react",
 	rootFilePath: "src/comps/triangle.jsx",
 	leafFilePath: "src/comps/triangle_1_1_2_1_2_2_1.jsx",
 	changeFileFn: (filePath, text) => {
@@ -266,6 +267,7 @@ const triangleReact = {
 };
 const triangleVue = {
 	dirname: "triangle-vue",
+	framework: "vue",
 	rootFilePath: "src/components/triangle.vue",
 	leafFilePath: "src/components/triangle_1_1_2_1_2_2_1.vue",
 	changeFileFn: (filePath, text) => {
