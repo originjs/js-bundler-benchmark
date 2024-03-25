@@ -75,6 +75,14 @@ async function start() {
 				loadPageTime4Cold,
 				serverStartTime4Hot: serverStartTime4Hot ?? "skipped",
 				loadPageTime4Hot: loadPageTime4Hot ?? "skipped",
+				serverStartAndLoadPageTime4Code: addFormatOutput(
+					serverStartTime4Cold,
+					loadPageTime4Cold,
+				),
+				serverStartAndLoadPageTime4Hot: addFormatOutput(
+					serverStartTime4Hot,
+					loadPageTime4Hot,
+				),
 				rootHmrTime,
 				leafHmrTime,
 				buildTime,
@@ -88,6 +96,20 @@ async function start() {
 	}
 	await report(results, projectInfo);
 	console.table(results);
+}
+
+function addFormatOutput(...args) {
+	console.log(args);
+	let val = 0;
+	for (const arg of args) {
+		if (!arg || arg === "skipped" || arg === -1) {
+			console.log("skipped");
+			return "skipped";
+		}
+		val += arg;
+	}
+	console.log(val);
+	return val;
 }
 
 function printResult() {
