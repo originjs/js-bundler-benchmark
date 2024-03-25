@@ -1,10 +1,4 @@
-import {
-	appendFileSync,
-	readFileSync,
-	rmSync,
-	statSync,
-	writeFileSync,
-} from "fs";
+import { readFileSync, rmSync, statSync, writeFileSync } from "fs";
 import { join, resolve } from "path";
 import playwright from "playwright";
 import * as tar from "tar";
@@ -99,7 +93,6 @@ async function start() {
 }
 
 function addFormatOutput(...args) {
-	console.log(args);
 	let val = 0;
 	for (const arg of args) {
 		if (!arg || arg === "skipped" || arg === -1) {
@@ -108,7 +101,6 @@ function addFormatOutput(...args) {
 		}
 		val += arg;
 	}
-	console.log(val);
 	return val;
 }
 
