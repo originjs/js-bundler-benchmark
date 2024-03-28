@@ -69,7 +69,7 @@ async function start() {
 				loadPageTime4Cold,
 				serverStartTime4Hot: serverStartTime4Hot ?? "skipped",
 				loadPageTime4Hot: loadPageTime4Hot ?? "skipped",
-				serverStartAndLoadPageTime4Code: addFormatOutput(
+				serverStartAndLoadPageTime4Cold: addFormatOutput(
 					serverStartTime4Cold,
 					loadPageTime4Cold,
 				),
