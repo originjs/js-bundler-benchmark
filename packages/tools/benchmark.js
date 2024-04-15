@@ -96,7 +96,6 @@ function addFormatOutput(...args) {
 	let val = 0;
 	for (const arg of args) {
 		if (!arg || arg === "skipped" || arg === -1) {
-			console.log("skipped");
 			return "skipped";
 		}
 		val += arg;
