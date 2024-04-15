@@ -32,8 +32,9 @@ function dealdata(jsonData, patchId, projectInfo) {
 				displayName: result.bundler,
 				techStack,
 				rawValue:
-					values[filteredProps.indexOf(prop)] === "skipped"
-						? -1
+					values[filteredProps.indexOf(prop)] === "skipped" ||
+					values[filteredProps.indexOf(prop)] === -1
+						? null
 						: values[filteredProps.indexOf(prop)],
 				content: result,
 				patchId,
