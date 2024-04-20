@@ -12,9 +12,10 @@ const context = await esbuild.context({
 	entryPoints: [path.resolve(dirname, "./src/index.tsx")],
 	bundle: true,
 	outfile: "esbuild-serve/main.js",
-	banner: {
-		js: "(() => { (new EventSource(\"/esbuild\")).addEventListener('change', () => location.reload()); })();",
-	},
+	// Remove manual HMR
+	// banner: {
+	// 	js: "(() => { (new EventSource(\"/esbuild\")).addEventListener('change', () => location.reload()); })();",
+	// },
 });
 
 const serveDir = path.resolve(dirname, "./esbuild-serve");
