@@ -172,23 +172,29 @@ async function stopServer(bundler) {
 	return await bundler.stop();
 }
 
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function hmrTime(page, filepath) {
 	const testCodeText = "Test hmr reaction time";
-	projectInfo.changeFileFn(filepath, testCodeText);
 	const rootConsolePromise = page.waitForEvent("console", {
 		timeout: 10000,
 		predicate: (e) => {
 			const logText = e.text();
-			return logText.includes(testCodeText);
+			return logText === testCodeText;
 		},
 	});
+	//  waiting for promise execution,1s is enough
+	await sleep(1000);
+	projectInfo.changeFileFn(filepath, testCodeText);
 	const hmrRootStart = Date.now();
 	try {
 		await rootConsolePromise;
+		return Date.now() - hmrRootStart;
 	} catch (e) {
 		return -1;
 	}
-	return Date.now() - hmrRootStart;
 }
 
 async function build(bundler) {
