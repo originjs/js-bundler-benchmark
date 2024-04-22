@@ -51,7 +51,8 @@ async function start() {
 				page = hotBrowser.page;
 				loadPageTime4Hot = hotBrowser.time;
 			}
-
+			// wait for some build tools (like turbo) compile
+			await sleep(3000);
 			const rootHmrTime = await hmrTime(page, rootFilePath);
 			await giveSomeRest(1000);
 			const leafHmrTime = await hmrTime(page, leafFilePath);
