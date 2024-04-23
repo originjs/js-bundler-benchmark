@@ -163,7 +163,7 @@ const triangleReact = {
 			"Parcel-swc",
 			5071,
 			"start:parcel-swc",
-			/Server running/,
+			/Built in (.+m?s)/,
 			async () => {
 				return Promise.all([
 					forceRm(".parcel-cache"),
