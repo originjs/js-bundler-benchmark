@@ -5,14 +5,14 @@ export const parseArgs = () => {
 		projectName = projectArg.slice("-p=".length);
 	}
 
-	let projectIndex = -1;
+	let indexes = [];
 	const projectIndexArg = process.argv.find((arg) => arg.startsWith("-i="));
 	if (projectIndexArg) {
-		projectIndex = projectIndexArg.slice("-i=".length);
+		indexes = projectIndexArg.slice("-i=".length).split(",").map(Number);
 	}
 
 	return {
 		projectName,
-		projectIndex,
+		indexes,
 	};
 };

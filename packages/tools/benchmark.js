@@ -6,7 +6,7 @@ import { parseArgs } from "./parseArgs.js";
 import { getProjectInfo, projectsDirname, runtimeInfo } from "./projectInfo.js";
 import { report } from "./report.js";
 
-const { projectName, projectIndex } = parseArgs();
+const { projectName, indexes } = parseArgs();
 
 const workspaceName = projectName || "triangle-react";
 // set currentDir for build tools
@@ -25,9 +25,9 @@ const results = [];
 const browser = await playwright.chromium.launch();
 
 const buildTasks =
-	projectIndex === -1
+	!indexes || indexes.length === 0
 		? projectInfo.buildInfo
-		: [projectInfo.buildInfo[projectIndex]];
+		: projectInfo.buildInfo.filter((_, index) => indexes.includes(index));
 
 async function start() {
 	for (const task of buildTasks) {
