@@ -78,7 +78,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Webpack",
-			"Webpack (babel)",
+			"Webpack(babel)",
 			5020,
 			"start:webpack",
 			/compiled successfully in (.+m?s)/,
@@ -90,7 +90,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Webpack",
-			"Webpack (swc)",
+			"Webpack(swc)",
 			5021,
 			"start:webpack-swc",
 			/compiled successfully in (.+ m?s)/,
@@ -102,7 +102,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Vite",
-			"Vite",
+			"Vite(babel)",
 			5010,
 			"start:vite",
 			/ready in (.+ m?s)/,
@@ -117,7 +117,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Vite",
-			"Vite (swc)",
+			"Vite(swc)",
 			5011,
 			"start:vite-swc",
 			/ready in (.+ m?s)/,
@@ -132,7 +132,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Farm",
-			"Farm",
+			"Farm(swc)",
 			5000,
 			"start:farm",
 			/Ready in (.+m?s)/,
@@ -148,7 +148,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Parcel",
-			"Parcel",
+			"Parcel(babel)",
 			5070,
 			"start:parcel",
 			/Built in (.+m?s)/,
@@ -160,7 +160,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"Parcel",
-			"Parcel-swc",
+			"Parcel(swc)",
 			5071,
 			"start:parcel-swc",
 			/Built in (.+m?s)/,
@@ -175,7 +175,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"snowpack",
-			"snowpack",
+			"snowpack(babel)",
 			5080,
 			"start:snowpack",
 			/Server started in (.+m?s)/,
@@ -190,7 +190,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"snowpack",
-			"snowpack-swc",
+			"snowpack(swc)",
 			5081,
 			"start:snowpack-swc",
 			/Server started in (.+m?s)/,
@@ -205,7 +205,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"rsbuild",
-			"rsbuild-babel",
+			"rsbuild(babel)",
 			5090,
 			"start:rsbuild-babel",
 			/Client compiled in (.+m?s)/,
@@ -217,7 +217,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"rsbuild",
-			"rsbuild-swc",
+			"rsbuild(swc)",
 			5091,
 			"start:rsbuild-swc",
 			/Client compiled in (.+m?s)/,
@@ -229,7 +229,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"rollup",
-			"rollup",
+			"rollup(babel)",
 			5100,
 			"start:rollup",
 			/created dist-rollup\/index.js in (.+m?s)/,
@@ -241,7 +241,7 @@ const triangleReact = {
 		),
 		new BuildTool(
 			"rollup",
-			"rollup-swc",
+			"rollup(swc)",
 			5101,
 			"start:rollup-swc",
 			/created dist-rollup-swc\/index.js in (.+m?s)/,
