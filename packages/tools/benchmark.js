@@ -23,6 +23,7 @@ const originalLeafFileContent = readFileSync(leafFilePath, "utf-8");
 
 const results = [];
 const browser = await playwright.chromium.launch();
+const context = await browser.newContext();
 
 const buildTasks =
 	!indexes || indexes.length === 0
@@ -36,17 +37,20 @@ async function start() {
 			// first startup: clear cache, cold start
 			await cleanServerCache(task);
 			const serverStartTime4Cold = await startServer(task);
+			await giveSomeRest(1000);
 			let { time: loadPageTime4Cold, page } = await openBrowser(task);
 
 			let serverStartTime4Hot;
 			let loadPageTime4Hot;
 			// some build tool don`t support hot cache
 			if (!task.skipHotStart) {
-				await closePage();
+				await page.close();
+				// await closePage();
 				await stopServer(task);
-				await giveSomeRest();
+				await giveSomeRest(1000);
 				// second startup: no cache cleaning, hot start
 				serverStartTime4Hot = await startServer(task);
+				await giveSomeRest(1000);
 				const hotBrowser = await openBrowser(task);
 				page = hotBrowser.page;
 				loadPageTime4Hot = hotBrowser.time;
@@ -57,7 +61,7 @@ async function start() {
 			await giveSomeRest(1000);
 			const leafHmrTime = await hmrTime(page, leafFilePath);
 
-			await closePage();
+			await page.close();
 			await stopServer(task);
 
 			const buildTime = await build(task);
@@ -89,6 +93,8 @@ async function start() {
 			writeFileSync(leafFilePath, originalLeafFileContent);
 		}
 	}
+	await context.close();
+	await browser.close();
 	await report(results, projectInfo);
 	console.table(results);
 }
@@ -104,24 +110,12 @@ function addFormatOutput(...args) {
 	return val;
 }
 
-function printResult() {
-	const result = Object.fromEntries(
-		Object.entries(totalResult).map(([k, v]) => [
-			k,
-			// average
-			v ? (v / count).toFixed(1) : v,
-		]),
-	);
-
-	results.push({ name: buildTool.name, result });
-}
-
 async function giveSomeRest(time = 300) {
 	return await new Promise((resolve) => setTimeout(resolve, time));
 }
 
 async function openBrowser(bundler) {
-	const page = await (await browser.newContext()).newPage();
+	const page = await context.newPage();
 	if (!bundler.script) {
 		return { page, time: -1 };
 	}
