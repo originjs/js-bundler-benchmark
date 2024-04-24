@@ -28,7 +28,7 @@ const triangleReact = {
 			"build:rspack",
 			"dist-rspack",
 			false,
-			true,
+			false,
 		),
 		new BuildTool(
 			"Rspack",
@@ -42,7 +42,7 @@ const triangleReact = {
 			"build:rspack-swc",
 			"dist-rspack-swc",
 			false,
-			true,
+			false,
 		),
 		new BuildTool(
 			"esbuild",
@@ -144,7 +144,7 @@ const triangleReact = {
 			},
 			"build:farm",
 			"dist-farm",
-			true,
+			false,
 		),
 		new BuildTool(
 			"Parcel",
