@@ -127,11 +127,17 @@ async function openBrowser(bundler) {
 	}
 
 	await giveSomeRest();
-	const loadPromise = page.waitForEvent("load", { timeout: 30000 });
-	const pageLoadStart = Date.now();
-	page.goto(`http://localhost:${bundler.port}`);
-	await loadPromise;
-	return { page, time: Date.now() - pageLoadStart };
+	await page.goto(`http://localhost:${bundler.port}`, {
+		timeout: 30000,
+		waitUntil: "load",
+	});
+	const loadTime = await page.evaluate(() => {
+		return (
+			window.performance.timing.loadEventEnd -
+			window.performance.timing.navigationStart
+		);
+	});
+	return { page, time: loadTime };
 }
 
 async function closePage() {
@@ -203,10 +209,7 @@ async function build(bundler) {
 		cleanDistDir(bundler);
 		await cleanServerCache(bundler);
 		await giveSomeRest(1000);
-		const productionStart = Date.now();
-		await startProductionBuild(bundler);
-		const productionEnd = Date.now();
-		return productionEnd - productionStart;
+		return await startProductionBuild(bundler);
 	}
 	return -1;
 }

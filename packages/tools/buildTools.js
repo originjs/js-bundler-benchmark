@@ -94,16 +94,21 @@ export class BuildTool {
 		);
 		this.child = child;
 		return new Promise((resolve, reject) => {
+			let startTime = null;
+			child.on("spawn", () => {
+				startTime = new Date();
+			});
 			child.on("error", (error) => {
 				console.log(`${this.name} error: ${error.message}`);
 				reject(error);
 			});
 			child.on("exit", (code) => {
+				const endTime = new Date();
 				if (code !== null && code !== 0 && code !== 1) {
 					console.log(`${this.name} exit: ${code}`);
 					reject(code);
 				}
-				resolve();
+				resolve(endTime - startTime);
 			});
 		});
 	}
