@@ -16,3 +16,4 @@ esbuild-serve
 next-env.d.ts
 /packages/projects/**/dist-*
 /packages/projects/**/.cache
+packages/**/.DS_Store
