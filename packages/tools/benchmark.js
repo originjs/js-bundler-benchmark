@@ -131,13 +131,10 @@ async function openBrowser(bundler) {
 		timeout: 30000,
 		waitUntil: "load",
 	});
-	const loadTime = await page.evaluate(() => {
-		return (
-			window.performance.timing.loadEventEnd -
-			window.performance.timing.navigationStart
-		);
+	const performanceTime = await page.evaluate(() => {
+		return window.performance.getEntriesByType("navigation");
 	});
-	return { page, time: loadTime };
+	return { page, time: performanceTime.duration };
 }
 
 async function closePage() {
