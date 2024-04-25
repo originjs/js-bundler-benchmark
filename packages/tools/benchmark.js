@@ -126,7 +126,7 @@ async function openBrowser(bundler) {
 		waitUntil: "load",
 	});
 	const performanceTime = await page.evaluate(() => {
-		return window.performance.getEntriesByType("navigation");
+		return window.performance.getEntriesByType("navigation")[0];
 	});
 	return { page, time: performanceTime.duration };
 }
