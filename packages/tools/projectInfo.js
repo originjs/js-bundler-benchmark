@@ -256,7 +256,7 @@ const triangleReact = {
 			"wmr",
 			5110,
 			"start:wmr",
-			/WMR dev server running at:/,
+			/WMR dev server running (.+)/,
 			async () => {
 				return forceRm("dist-wmr");
 			},

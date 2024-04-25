@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import kill from "tree-kill";
+import { isNumber } from "underscore";
 
 export class BuildTool {
 	constructor(
@@ -47,20 +48,29 @@ export class BuildTool {
 				resolve(args);
 			};
 
+			let startTime = null;
 			const listenMessages = (data) => {
-				console.log(data.toString());
 				const match = this.startedRegex.exec(data);
 				if (match) {
+					const endTime = new Date();
 					if (!match[1]) {
 						_resolve(null);
 						return;
 					}
 
-					const number = parseFloat(match[1].replace(/m?s$/, "").trim());
-					_resolve(number * (match[1].endsWith("ms") ? 1 : 1000));
+					const devTime = match[1].replace(/m?s$/, "").trim();
+					if (isNumber(devTime)) {
+						const number = parseFloat(devTime);
+						_resolve(number * (match[1].endsWith("ms") ? 1 : 1000));
+					} else {
+						_resolve(endTime - startTime);
+					}
 				}
 			};
 
+			child.on("spawn", () => {
+				startTime = new Date();
+			});
 			child.stdout.on("data", (data) => listenMessages(data));
 			child.stderr.on("data", (data) => listenMessages(data));
 

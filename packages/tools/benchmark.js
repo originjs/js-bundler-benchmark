@@ -45,7 +45,6 @@ async function start() {
 			// some build tool don`t support hot cache
 			if (!task.skipHotStart) {
 				await page.close();
-				// await closePage();
 				await stopServer(task);
 				await giveSomeRest(1000);
 				// second startup: no cache cleaning, hot start
