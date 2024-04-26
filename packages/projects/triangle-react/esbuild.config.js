@@ -1,5 +1,6 @@
 import fs from "fs";
 import http from "http";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "path";
 import url from "url";
 import esbuild from "esbuild";
@@ -7,26 +8,25 @@ import esbuild from "esbuild";
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const watch = args.includes("--watch");
-
+// dist-esbuild dir
+const distDir = path.resolve(dirname, "dist-esbuild");
+const existDistDir = existsSync(distDir);
+if (!existDistDir) {
+	mkdirSync(distDir);
+}
 const context = await esbuild.context({
 	entryPoints: [path.resolve(dirname, "./src/index.tsx")],
 	bundle: true,
-	outfile: "esbuild-serve/main.js",
+	outfile: path.resolve(distDir, "main.js"),
 	// Remove manual HMR
 	// banner: {
 	// 	js: "(() => { (new EventSource(\"/esbuild\")).addEventListener('change', () => location.reload()); })();",
 	// },
 });
 
-const serveDir = path.resolve(dirname, "./esbuild-serve");
-
-if (!fs.existsSync(serveDir)) {
-	fs.mkdirSync(serveDir);
-}
-
 fs.cpSync(
 	path.resolve(dirname, "./esbuild-public/index.html"),
-	path.resolve(serveDir, "index.html"),
+	path.resolve(distDir, "index.html"),
 );
 
 if (watch) {
@@ -35,7 +35,7 @@ if (watch) {
 	const { host, port } = await context.serve({
 		host: "localhost",
 		port: 1235,
-		servedir: "esbuild-serve",
+		servedir: distDir,
 	});
 	const end = Date.now();
 	const server = http.createServer((req, res) => {

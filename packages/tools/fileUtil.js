@@ -4,7 +4,7 @@ import { rm } from "fs/promises";
 import { runtimeInfo } from "./projectInfo.js";
 
 export function forceRm(dir) {
-	return rmSync(join(runtimeInfo.currentDir, dir), {
+	return rmSync(dir, {
 		force: true,
 		recursive: true,
 		maxRetries: 5,
