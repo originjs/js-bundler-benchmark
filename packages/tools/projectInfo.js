@@ -1,10 +1,7 @@
 import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
-import { mkdir } from "node:fs/promises";
-import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolve } from "path";
 import { BuildTool } from "./buildTools.js";
-import { forceRm } from "./fileUtil.js";
 
 const map = new Map();
 const triangleReact = {
@@ -22,13 +19,8 @@ const triangleReact = {
 			5030,
 			"start:rspack",
 			/compiled in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rspack");
-			},
 			"build:rspack",
 			"dist-rspack",
-			false,
-			false,
 		),
 		new BuildTool(
 			"Rspack",
@@ -36,13 +28,8 @@ const triangleReact = {
 			5031,
 			"start:rspack-swc",
 			/compiled in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rspack-swc");
-			},
 			"build:rspack-swc",
 			"dist-rspack-swc",
-			false,
-			false,
 		),
 		new BuildTool(
 			"esbuild",
@@ -50,17 +37,6 @@ const triangleReact = {
 			5040,
 			"start:esbuild",
 			/esbuild serve cost (.+m?s)/,
-			async () => {
-				const serveDir = join(runtimeInfo.currentDir, "esbuild-serve");
-				try {
-					await mkdir(serveDir);
-					await forceRm("dist-esbuild");
-				} catch (err) {
-					if (err.code !== "EEXIST") {
-						throw err;
-					}
-				}
-			},
 			"build:esbuild",
 			"dist-esbuild",
 		),
@@ -70,11 +46,9 @@ const triangleReact = {
 			5050,
 			"start:turbopack",
 			/Ready in (.+m?s)/,
-			() => {
-				return Promise.all([forceRm(".next"), forceRm("dist-turbopack")]);
-			},
 			"",
-			"",
+			"dist-turbopack",
+			".next",
 		),
 		new BuildTool(
 			"Webpack",
@@ -82,9 +56,6 @@ const triangleReact = {
 			5020,
 			"start:webpack",
 			/compiled successfully in (.+m?s)/,
-			async () => {
-				return forceRm("dist-webpack");
-			},
 			"build:webpack",
 			"dist-webpack",
 		),
@@ -94,9 +65,6 @@ const triangleReact = {
 			5021,
 			"start:webpack-swc",
 			/compiled successfully in (.+ m?s)/,
-			async () => {
-				return forceRm("dist-webpack-swc");
-			},
 			"build:webpack-swc",
 			"dist-webpack-swc",
 		),
@@ -106,14 +74,9 @@ const triangleReact = {
 			5010,
 			"start:vite",
 			/ready in (.+ m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.cache-vite"),
-					forceRm("dist-vite"),
-				]);
-			},
 			"build:vite",
 			"dist-vite",
+			"node_modules/.cache-vite",
 		),
 		new BuildTool(
 			"Vite",
@@ -121,14 +84,9 @@ const triangleReact = {
 			5011,
 			"start:vite-swc",
 			/ready in (.+ m?s)/,
-			async () => {
-				Promise.all([
-					forceRm("node_modules/.cache-vite-swc"),
-					forceRm("dist-vite-swc"),
-				]);
-			},
 			"build:vite-swc",
 			"dist-vite-swc",
+			"node_modules/.cache-vite-swc",
 		),
 		new BuildTool(
 			"Farm",
@@ -136,15 +94,9 @@ const triangleReact = {
 			5000,
 			"start:farm",
 			/Ready in (.+m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.farm"),
-					forceRm("dist-farm"),
-				]);
-			},
 			"build:farm",
 			"dist-farm",
-			false,
+			"node_modules/.farm",
 		),
 		new BuildTool(
 			"Parcel",
@@ -152,11 +104,9 @@ const triangleReact = {
 			5070,
 			"start:parcel",
 			/Built in (.+m?s)/,
-			async () => {
-				return Promise.all([forceRm(".parcel-cache"), forceRm("dist-parcel")]);
-			},
 			"build:parcel",
 			"dist-parcel",
+			".parcel-cache",
 		),
 		new BuildTool(
 			"Parcel",
@@ -164,14 +114,9 @@ const triangleReact = {
 			5071,
 			"start:parcel-swc",
 			/Built in (.+m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm(".parcel-cache"),
-					forceRm("dist-parcel-swc"),
-				]);
-			},
 			"build:parcel-swc",
 			"dist-parcel-swc",
+			".parcel-cache",
 		),
 		new BuildTool(
 			"snowpack",
@@ -179,14 +124,9 @@ const triangleReact = {
 			5080,
 			"start:snowpack",
 			/Server started in (.+m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.cache"),
-					forceRm("dist-snowpack"),
-				]);
-			},
 			"build:snowpack",
 			"dist-snowpack",
+			"node_modules/.cache",
 		),
 		new BuildTool(
 			"snowpack",
@@ -194,14 +134,9 @@ const triangleReact = {
 			5081,
 			"start:snowpack-swc",
 			/Server started in (.+m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.cache"),
-					forceRm("dist-snowpack-swc"),
-				]);
-			},
 			"build:snowpack-swc",
 			"dist-snowpack-swc",
+			"node_modules/.cache",
 		),
 		new BuildTool(
 			"rsbuild",
@@ -209,9 +144,6 @@ const triangleReact = {
 			5090,
 			"start:rsbuild-babel",
 			/Client compiled in (.+m?s)/,
-			async () => {
-				forceRm("dist-rsbuild-babel");
-			},
 			"build:rsbuild-babel",
 			"dist-rsbuild-babel",
 		),
@@ -221,9 +153,6 @@ const triangleReact = {
 			5091,
 			"start:rsbuild-swc",
 			/Client compiled in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rsbuild-swc");
-			},
 			"build:rsbuild-swc",
 			"dist-rsbuild-swc",
 		),
@@ -233,9 +162,6 @@ const triangleReact = {
 			5100,
 			"start:rollup",
 			/created dist-rollup\/index.js in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rollup");
-			},
 			"build:rollup",
 			"dist-rollup",
 		),
@@ -245,9 +171,6 @@ const triangleReact = {
 			5101,
 			"start:rollup-swc",
 			/created dist-rollup-swc\/index.js in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rollup-swc");
-			},
 			"build:rollup-swc",
 			"dist-rollup-swc",
 		),
@@ -257,9 +180,6 @@ const triangleReact = {
 			5110,
 			"start:wmr",
 			/WMR dev server running (.+)/,
-			async () => {
-				return forceRm("dist-wmr");
-			},
 			"build:wmr",
 			"dist-wmr",
 		),
@@ -285,13 +205,8 @@ const triangleVue = {
 			5030,
 			"start:rspack",
 			/compiled in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rspack");
-			},
 			"build:rspack",
 			"dist-rspack",
-			false,
-			true,
 		),
 		new BuildTool(
 			"esbuild",
@@ -299,17 +214,6 @@ const triangleVue = {
 			5040,
 			"start:esbuild",
 			/esbuild serve cost (.+m?s)/,
-			async () => {
-				const serveDir = join(runtimeInfo.currentDir, "esbuild-serve");
-				try {
-					await mkdir(serveDir);
-					await forceRm("dist-esbuild");
-				} catch (err) {
-					if (err.code !== "EEXIST") {
-						throw err;
-					}
-				}
-			},
 			"build:esbuild",
 			"dist-esbuild",
 		),
@@ -319,9 +223,6 @@ const triangleVue = {
 			5020,
 			"start:webpack",
 			/compiled successfully in (.+m?s)/,
-			async () => {
-				return forceRm("dist-webpack");
-			},
 			"build:webpack",
 			"dist-webpack",
 		),
@@ -331,12 +232,6 @@ const triangleVue = {
 			5010,
 			"start:vite",
 			/ready in (.+ m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.cache-vite"),
-					forceRm("dist-vite"),
-				]);
-			},
 			"build:vite",
 			"dist-vite",
 		),
@@ -346,15 +241,9 @@ const triangleVue = {
 			5000,
 			"start:farm",
 			/Ready in (.+m?s)/,
-			async () => {
-				return Promise.all([
-					forceRm("node_modules/.farm"),
-					forceRm("dist-farm"),
-				]);
-			},
 			"build:farm",
 			"dist-farm",
-			true,
+			"node_modules/.farm",
 		),
 		new BuildTool(
 			"Parcel",
@@ -362,11 +251,9 @@ const triangleVue = {
 			5070,
 			"start:parcel",
 			/Built in (.+m?s)/,
-			async () => {
-				return Promise.all([forceRm(".parcel-cache"), forceRm("dist-parcel")]);
-			},
 			"build:parcel",
 			"dist-parcel",
+			".parcel-cache",
 		),
 		new BuildTool(
 			"rsbuild",
@@ -374,11 +261,9 @@ const triangleVue = {
 			5090,
 			"start:rsbuild",
 			/Client compiled in (.+m?s)/,
-			async () => {
-				forceRm("dist-rsbuild-babel");
-			},
 			"build:rsbuild",
 			"dist-rsbuild",
+			"dist-rsbuild-babel",
 		),
 		new BuildTool(
 			"rollup",
@@ -386,9 +271,6 @@ const triangleVue = {
 			5100,
 			"start:rollup",
 			/created dist-rollup\/index.js in (.+m?s)/,
-			async () => {
-				return forceRm("dist-rollup");
-			},
 			"build:rollup",
 			"dist-rollup",
 		),

@@ -1,43 +1,133 @@
 import { spawn } from "child_process";
+import { existsSync, statSync } from "fs";
+import { join } from "path";
+import { basename } from "path";
+import * as tar from "tar";
 import kill from "tree-kill";
 import { isNumber } from "underscore";
+import { forceRm, sleep } from "./fileUtil.js";
+import { runtimeInfo } from "./projectInfo.js";
 
 export class BuildTool {
+	workspaceName;
+	currentDir;
+	serverChild;
+	buildChild;
+	page;
+
 	constructor(
 		projectName,
 		name,
 		port,
-		script,
+		startScript,
 		startedRegex,
-		clean,
 		buildScript,
 		distDir,
-		skipHmr = false,
-		skipHotStart = false,
+		cacheDir,
 	) {
 		this.projectName = projectName;
 		this.name = name;
 		this.port = port;
-		this.script = script;
+		this.startScript = startScript;
 		this.startedRegex = startedRegex;
-		this.clean = clean;
 		this.buildScript = buildScript;
 		this.distDir = distDir;
-		this.skipHmr = skipHmr;
-		this.skipHotStart = skipHotStart;
+		this.cacheDir = cacheDir;
 	}
 
-	async startServer(workspaceName) {
+	cleanDist = () => {
+		if (this.distDir) {
+			forceRm(join(this.currentDir, this.distDir));
+			console.log(`{${this.projectName}} clean dist dir:{${this.distDir}}`);
+		}
+	};
+
+	cleanCache = () => {
+		if (this.cacheDir) {
+			forceRm(join(this.currentDir, this.cacheDir));
+			console.log(`{${this.projectName}} clean cache dir:{${this.cacheDir}}`);
+		}
+	};
+
+	cleanDistAndCache = () => {
+		this.cleanDist();
+		this.cleanCache();
+	};
+
+	loadPageTimeAndClosePage = async (context) => {
+		const loadPageTime = await this.loadPageTime(context);
+		await this.closePage();
+		return loadPageTime;
+	};
+
+	closePage = async () => {
+		await this.page?.close();
+		this.page = null;
+	};
+
+	loadPageTime = async (context) => {
+		if (!this.port) {
+			return -1;
+		}
+		this.page = await context.newPage();
+		await sleep(1000);
+		const url = `http://localhost:${this.port}`;
+		await this.page.goto(url, {
+			timeout: 30000,
+			waitUntil: "load",
+		});
+		const performanceTime = await this.page.evaluate(() => {
+			return window.performance.getEntriesByType("navigation")[0];
+		});
+		const time = performanceTime?.duration ?? -1;
+		console.log(`{${this.projectName}} load page ${url} {${time}} ms`);
+		return time;
+	};
+
+	hmrTime = async (projectInfo, filePath) => {
+		const testCodeText = "Test hmr reaction time";
+		const rootConsolePromise = this.page.waitForEvent("console", {
+			timeout: 10000,
+			predicate: (e) => {
+				const logText = e.text();
+				return logText === testCodeText;
+			},
+		});
+		//  waiting for promise execution,1s is enough
+		await sleep(1000);
+		projectInfo.changeFileFn(filePath, testCodeText);
+		const hmrRootStart = Date.now();
+		try {
+			await rootConsolePromise;
+			const duration = Date.now() - hmrRootStart;
+			console.log(
+				`{${this.projectName}} hmrTime of ${basename(
+					filePath,
+				)} {${duration}} ms`,
+			);
+			return duration;
+		} catch (e) {
+			console.log(
+				`{${this.projectName}} hmrTime of ${basename(filePath)} error , ${e}`,
+			);
+			return -1;
+		}
+	};
+
+	startServer = async () => {
+		if (!this.startScript) {
+			return -1;
+		}
 		const child = spawn(
-			`pnpm --filter "${workspaceName}"`,
-			["run", this.script],
+			`pnpm --filter "${this.workspaceName}"`,
+			["run", this.startScript],
 			{
 				stdio: ["pipe", "pipe", "pipe"],
 				shell: true,
 				env: { ...process.env, NO_COLOR: "1" },
 			},
 		);
-		this.child = child;
+		this.serverChild = child;
 
 		return new Promise((resolve) => {
 			const timerNum = setTimeout(resolve, 120000);
@@ -58,21 +148,24 @@ export class BuildTool {
 						return;
 					}
 
-					const devTime = match[1].replace(/m?s$/, "").trim();
-					if (isNumber(devTime)) {
-						const number = parseFloat(devTime);
-						_resolve(number * (match[1].endsWith("ms") ? 1 : 1000));
+					const buildToolReportTime = match[1].replace(/m?s$/, "").trim();
+					let time = null;
+					if (isNumber(buildToolReportTime)) {
+						const number = parseFloat(buildToolReportTime);
+						time = number * (match[1].endsWith("ms") ? 1 : 1000);
 					} else {
-						_resolve(endTime - startTime);
+						time = endTime - startTime;
 					}
+					console.log(`{${this.projectName}} start server {${time}} ms`);
+					_resolve(time);
 				}
 			};
 
 			child.on("spawn", () => {
 				startTime = new Date();
 			});
-			child.stdout.on("data", (data) => listenMessages(data));
-			child.stderr.on("data", (data) => listenMessages(data));
+			child.stdout.on("data", (data) => listenMessages(data.toString()));
+			child.stderr.on("data", (data) => listenMessages(data.toString()));
 
 			child.on("exit", (code) => {
 				if (code !== null && code !== 0 && code !== 1) {
@@ -81,20 +174,32 @@ export class BuildTool {
 				}
 			});
 		});
-	}
+	};
 
-	stop() {
-		if (this.child) {
-			this.child.stdin.pause();
-			this.child.stdout.destroy();
-			this.child.stderr.destroy();
-			kill(this.child.pid);
+	stopChild = (child) => {
+		if (child) {
+			child.stdin.pause();
+			child.stdout.destroy();
+			child.stderr.destroy();
+			kill(child.pid);
 		}
-	}
+	};
 
-	async startProductionBuild(workspaceName) {
+	stopServer = () => {
+		this.stopChild(this.serverChild);
+		console.log(`{${this.projectName}} stop server`);
+		this.serverChild = null;
+	};
+
+	stopBuild = () => {
+		this.stopChild(this.buildChild);
+		console.log(`{${this.projectName}} stop build`);
+		this.buildChild = null;
+	};
+
+	buildTime = async () => {
 		const child = spawn(
-			`pnpm --filter "${workspaceName}"`,
+			`pnpm --filter "${this.workspaceName}"`,
 			["run", this.buildScript],
 			{
 				stdio: "pipe",
@@ -102,7 +207,7 @@ export class BuildTool {
 				env: { ...process.env, NO_COLOR: "1" },
 			},
 		);
-		this.child = child;
+		this.buildChild = child;
 		return new Promise((resolve, reject) => {
 			let startTime = null;
 			child.on("spawn", () => {
@@ -118,8 +223,36 @@ export class BuildTool {
 					console.log(`${this.name} exit: ${code}`);
 					reject(code);
 				}
-				resolve(endTime - startTime);
+				const duration = endTime - startTime;
+				console.log(`{${this.projectName}} get build time {${duration} ms}`);
+				resolve(duration);
 			});
 		});
-	}
+	};
+
+	tarDist = async () => {
+		const distDir = join(runtimeInfo.currentDir, this.distDir);
+		const exist = existsSync(distDir);
+		if (!exist) {
+			return -1;
+		}
+		await tar.c(
+			{
+				cwd: distDir,
+				gzip: true,
+				prefix: false,
+				file: `${distDir}/dist.tgz`,
+				filter: (path, _) => {
+					return path !== "dist.tgz";
+				},
+			},
+			["./"],
+		);
+		const distFileStat = statSync(`${distDir}/dist.tgz`);
+		const size = Math.round((distFileStat.size / 1024) * 10) / 10;
+		console.log(
+			`{${this.projectName}} get tar dist size of dir ${this.distDir}:{${size}} kb`,
+		);
+		return size;
+	};
 }
